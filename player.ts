@@ -1,8 +1,8 @@
 import Card from "./Card";
 
 interface Plays {
-    hit: boolean
-    stay: boolean
+    bust: boolean
+    stand: boolean
 }
 
 export default class Player {
@@ -19,19 +19,34 @@ export default class Player {
         this.calculateScore()
     }
 
-    public calculateScore(): void {
+    public hitMe(card: Card): void {
+        this.hand.push(card)
+        this.calculateScore()
+    }
+
+    public stay(): void {
+        this.calculateScore();
+        this.play.stand = true
+    }
+
+    public isBust(): boolean {
+        return this.play.bust
+    }
+
+    public isStanding(): boolean {
+        return this.play.stand
+    }
+
+    private calculateScore(): void {
         let total: number = 0
 
-        this.hand.forEach((card: Card) => {
-            if (card.letter === "A"){
-                let value: string = prompt("What is the value of A, 1 or 11?")
-                total += Number(value)
-            } else {
-                total += getCardValue(card.letter)
-            }
-        })
+        this.hand.forEach((card: Card) => total += card.value )
 
         this.score = Number(total)
+
+        if( total > 21 ){
+            this.play.bust = true
+        }
     }
 
     public toString(): string {

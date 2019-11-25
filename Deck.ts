@@ -1,5 +1,5 @@
 import Card from './Card';
-import Constants from "./constants";
+import Constants from "./Constants";
 
 export default class Deck {
 

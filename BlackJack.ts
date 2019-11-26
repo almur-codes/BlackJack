@@ -19,9 +19,7 @@ export default class BlackJack {
         this.addPlayersToGame(playerNames)
     }
 
-    public startGame(): void {
-        // this.resetGame()
-        
+    public startGame(): void {       
         this.deck = new Deck()
     
         this.players.forEach((player: Player) => {
@@ -45,7 +43,7 @@ export default class BlackJack {
 
     private addPlayersToGame(playerNames: Array<string>): void {
         playerNames.forEach((name: string) => {
-            this.players.push(new Player(name, [], { bust: false, stand: false }))
+            this.players.push(new Player(name))
         })
     }
 
@@ -59,7 +57,7 @@ export default class BlackJack {
                 winner: false
             })
             if ( !player.isBust() ) {
-                highestScoringPlayer = ( highestScoringPlayer.score > player.score ) ? highestScoringPlayer : player
+                highestScoringPlayer = ( highestScoringPlayer.getScore() > player.getScore() ) ? highestScoringPlayer : player
             }
         })
         this.display( highestScoringPlayer, {info: false, warning: false, bust: false, winner: true} )
@@ -77,7 +75,7 @@ export default class BlackJack {
         this.display( player, {info: true, warning: false, bust: false, winner: false} )
         
         // let input: string = prompt( player.name + "'s turn. Hit or Stay?" )
-        let input: string = (player.score < 16) ? 'hit' : 'stay'
+        let input: string = (player.getScore() < 16) ? 'hit' : 'stay'
         
         input = input.toLocaleLowerCase()
         
@@ -109,15 +107,15 @@ export default class BlackJack {
         }
 
         if( type.warning ){
-            console.log( player.name + " invalid move. Please try again" )
+            console.log( player.getName() + " invalid move. Please try again" )
         }
         
         if( type.bust ){
-            console.log( player.name + " is bust!!\n" + player.toString() )
+            console.log( player.getName() + " is bust!!\n" + player.toString() )
         }
 
         if( type.winner ){
-            console.log( player.name + " is the Winner!!\n" + player.toString() )
+            console.log( player.getName() + " is the Winner!!\n" + player.toString() )
         }
     }
 }

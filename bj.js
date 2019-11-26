@@ -40,6 +40,8 @@ exports.__esModule = true;
 var readline = require("readline");
 // let blackjack = new BlackJack()
 // blackjack.startGame()
+// function getUserInpput(question: string): string {
+// }
 var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -62,35 +64,29 @@ var question2 = function () {
 };
 var question3 = function (index) {
     return new Promise(function (resolve, reject) {
-        rl.question("q " + index + " What is your name? ", function (answer) {
+        rl.question("q" + index + " What is your name? ", function (answer) {
             console.log("Thank you for your valuable feedback: " + answer);
             resolve();
         });
     });
 };
+var question4 = function () {
+    return new Promise(function (resolve, reject) {
+        rl.question("q What is your age? ", function (answer) {
+            resolve();
+            return answer;
+        });
+    });
+};
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var index;
+    var age;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, question1()];
+            case 0: return [4 /*yield*/, question4()];
             case 1:
-                _a.sent();
-                return [4 /*yield*/, question2()];
-            case 2:
-                _a.sent();
-                index = 3;
-                _a.label = 3;
-            case 3:
-                if (!(index < 5)) return [3 /*break*/, 6];
-                return [4 /*yield*/, question3(index)];
-            case 4:
-                _a.sent();
-                _a.label = 5;
-            case 5:
-                index++;
-                return [3 /*break*/, 3];
-            case 6:
+                age = _a.sent();
                 rl.close();
+                console.log("AGE::: " + age);
                 return [2 /*return*/];
         }
     });

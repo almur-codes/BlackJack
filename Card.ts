@@ -2,9 +2,9 @@ import Constants from './Constants';
 
 export default class Card {
 
-    public letter: string
-    public suite: string
-    public value: number
+    private letter: string
+    private suite: string
+    private value: number
 
     public constructor( letter: string, suite: string, valueOfA?: number | undefined ){
         this.letter = letter
@@ -12,7 +12,11 @@ export default class Card {
         this.value = this.setCardValue(letter, valueOfA)
     }
 
-    public setCardValue(cardLetter: string, valueOfA?: number | undefined): number {
+    public getValue(): number {
+        return this.value
+    }
+
+    private setCardValue(cardLetter: string, valueOfA?: number | undefined): number {
         if( Constants.CardTypes.indexOf(cardLetter) === 0 ){
             if( valueOfA ){
                 return Number(valueOfA)

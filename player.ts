@@ -7,15 +7,15 @@ interface Plays {
 
 export default class Player {
 
-    public name: string
-    public hand: Array<Card>
-    public score: number
-    public play: Plays
+    private name: string
+    private hand: Array<Card>
+    private score: number
+    private play: Plays
 
-    public constructor(name: string, hand: Array<Card>, play: Plays){
+    public constructor(name: string){
         this.name = name
-        this.hand = hand
-        this.play = play
+        this.hand = []
+        this.play = { bust: false, stand: false }
         this.calculateScore()
     }
 
@@ -25,7 +25,7 @@ export default class Player {
     }
 
     public stay(): void {
-        this.calculateScore();
+        this.calculateScore()
         this.play.stand = true
     }
 
@@ -37,10 +37,18 @@ export default class Player {
         return this.play.stand
     }
 
+    public getName(): string {
+        return this.name
+    }
+
+    public getScore(): number {
+        return this.score
+    }
+
     private calculateScore(): void {
         let total: number = 0
 
-        this.hand.forEach((card: Card) => total += card.value )
+        this.hand.forEach((card: Card) => total += card.getValue() )
 
         this.score = Number(total)
 

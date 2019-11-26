@@ -46,10 +46,11 @@ export default class Player {
 
         if( total > 21 ){
             this.play.bust = true
+            this.score = 0
         }
     }
 
     public toString(): string {
-        return "Name: " + this.name + "; Hand: " + this.hand.map((card: Card) => card.toString) + "; Score: " + this.score
+        return "Name: " + this.name + "; Hand:" + this.hand.map((card: Card) => " " + card.toString()) + "; Score: " + this.score
     }
 }

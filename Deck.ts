@@ -3,7 +3,7 @@ import Constants from "./Constants";
 
 export default class Deck {
 
-    private cards: Array<Card>
+    private cards: Array<Card> = []
 
     public constructor() {
         Constants.CardTypes.forEach(cardType => {

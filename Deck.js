@@ -5,6 +5,7 @@ var Constants_1 = require("./Constants");
 var Deck = /** @class */ (function () {
     function Deck() {
         var _this = this;
+        this.cards = [];
         Constants_1["default"].CardTypes.forEach(function (cardType) {
             Constants_1["default"].CardSuites.forEach(function (cardSuite) {
                 _this.cards.push(new Card_1["default"](cardType, cardSuite));

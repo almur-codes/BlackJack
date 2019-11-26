@@ -1,0 +1,10 @@
+{
+    "name": "black-jack",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@types/jest": "24.0.23",
+        "@types/node": "12.12.8",
+        "typescript": "3.7.2"
+    }
+}

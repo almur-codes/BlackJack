@@ -8,11 +8,12 @@ export default class BlackJack {
     private deck: Deck
 
     public constructor(){
-        let numberOfPlayers: number | string = prompt("New Game of Black Jack\nHow Many Players")
-        numberOfPlayers = Number(numberOfPlayers)
+        // let numberOfPlayers: number | string = prompt("New Game of Black Jack\nHow Many Players")
+        // numberOfPlayers = Number(numberOfPlayers)
         let playerNames: Array<string> = []
-        for (let index: number = 0; index < numberOfPlayers; index++) {
-            let name: string = prompt("Enter player " + (index + 1) + "'s name")
+        for (let index: number = 0; index < 4; index++) {
+            // let name: string = prompt("Enter player " + (index + 1) + "'s name")
+            let name: string = "Player " + (index + 1)
             playerNames.push(name)
         }
         this.addPlayersToGame(playerNames)
@@ -49,15 +50,17 @@ export default class BlackJack {
     }
 
     private getWinner(): void {
-        let highestScoringPlayer: Player
+        let highestScoringPlayer: Player = this.players[0]
         this.players.forEach((player: Player) => {
             this.display(player, {
                 info: true,
                 warning: false,
-                bust: player.isBust(),
+                bust: false,
                 winner: false
             })
-            highestScoringPlayer = ( highestScoringPlayer.score > player.score ) ? highestScoringPlayer : player
+            if ( !player.isBust() ) {
+                highestScoringPlayer = ( highestScoringPlayer.score > player.score ) ? highestScoringPlayer : player
+            }
         })
         this.display( highestScoringPlayer, {info: false, warning: false, bust: false, winner: true} )
     }
@@ -73,7 +76,8 @@ export default class BlackJack {
     private playARound(player: Player): void {
         this.display( player, {info: true, warning: false, bust: false, winner: false} )
         
-        let input: string = prompt( player.name + "'s turn. Hit or Stay?" )
+        // let input: string = prompt( player.name + "'s turn. Hit or Stay?" )
+        let input: string = (player.score < 16) ? 'hit' : 'stay'
         
         input = input.toLocaleLowerCase()
         
@@ -117,6 +121,3 @@ export default class BlackJack {
         }
     }
 }
-
-let bj = new BlackJack()
-bj.startGame()

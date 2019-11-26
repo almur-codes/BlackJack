@@ -23,7 +23,7 @@ var Card = /** @class */ (function () {
         throw new Error("Unexpected out of bounds");
     };
     Card.prototype.toString = function () {
-        return this.letter + " | " + this.suite + " => " + this.value;
+        return this.letter + "|" + this.suite + " => " + this.value;
     };
     return Card;
 }());

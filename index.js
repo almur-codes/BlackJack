@@ -38,7 +38,6 @@ function startGame() {
     resetGame();
     createDeck();
     addPlayersToGame();
-    console.log(deck);
     players.forEach(function (player, index) {
         player.hand = [
             dealCard(),
@@ -46,7 +45,6 @@ function startGame() {
         ];
         calculateValue(index);
     });
-    console.log(deck);
     while (!players[0].play.stay && !players[1].play.stay) {
         playARound(0);
         playARound(1);
@@ -66,7 +64,6 @@ function playARound(playerIndex) {
     output(players[playerIndex]);
     var input = prompt(players[playerIndex].name + "'s turn. Hit or Stay?");
     input = input.toLocaleLowerCase();
-    console.log(deck);
     if (input === "hit") {
         players[playerIndex].hand.push(dealCard());
         calculateValue(playerIndex);
@@ -125,3 +122,4 @@ function dealCard() {
     return card.pop();
 }
 startGame();
+//# sourceMappingURL=index.js.map

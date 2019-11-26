@@ -5,11 +5,12 @@ var Player_1 = require("./Player");
 var BlackJack = /** @class */ (function () {
     function BlackJack() {
         this.players = [];
-        var numberOfPlayers = prompt("New Game of Black Jack\nHow Many Players");
-        numberOfPlayers = Number(numberOfPlayers);
+        // let numberOfPlayers: number | string = prompt("New Game of Black Jack\nHow Many Players")
+        // numberOfPlayers = Number(numberOfPlayers)
         var playerNames = [];
-        for (var index = 0; index < numberOfPlayers; index++) {
-            var name_1 = prompt("Enter player " + (index + 1) + "'s name");
+        for (var index = 0; index < 4; index++) {
+            // let name: string = prompt("Enter player " + (index + 1) + "'s name")
+            var name_1 = "Player " + (index + 1);
             playerNames.push(name_1);
         }
         this.addPlayersToGame(playerNames);
@@ -41,15 +42,17 @@ var BlackJack = /** @class */ (function () {
     };
     BlackJack.prototype.getWinner = function () {
         var _this = this;
-        var highestScoringPlayer;
+        var highestScoringPlayer = this.players[0];
         this.players.forEach(function (player) {
             _this.display(player, {
                 info: true,
                 warning: false,
-                bust: player.isBust(),
+                bust: false,
                 winner: false
             });
-            highestScoringPlayer = (highestScoringPlayer.score > player.score) ? highestScoringPlayer : player;
+            if (!player.isBust()) {
+                highestScoringPlayer = (highestScoringPlayer.score > player.score) ? highestScoringPlayer : player;
+            }
         });
         this.display(highestScoringPlayer, { info: false, warning: false, bust: false, winner: true });
     };
@@ -62,7 +65,8 @@ var BlackJack = /** @class */ (function () {
     };
     BlackJack.prototype.playARound = function (player) {
         this.display(player, { info: true, warning: false, bust: false, winner: false });
-        var input = prompt(player.name + "'s turn. Hit or Stay?");
+        // let input: string = prompt( player.name + "'s turn. Hit or Stay?" )
+        var input = (player.score < 16) ? 'hit' : 'stay';
         input = input.toLocaleLowerCase();
         if (input === "hit") {
             player.hitMe(this.deck.deal());
@@ -98,5 +102,3 @@ var BlackJack = /** @class */ (function () {
     return BlackJack;
 }());
 exports["default"] = BlackJack;
-var bj = new BlackJack();
-bj.startGame();

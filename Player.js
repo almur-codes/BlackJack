@@ -27,10 +27,11 @@ var Player = /** @class */ (function () {
         this.score = Number(total);
         if (total > 21) {
             this.play.bust = true;
+            this.score = 0;
         }
     };
     Player.prototype.toString = function () {
-        return "Name: " + this.name + "; Hand: " + this.hand.map(function (card) { return card.toString; }) + "; Score: " + this.score;
+        return "Name: " + this.name + "; Hand:" + this.hand.map(function (card) { return " " + card.toString(); }) + "; Score: " + this.score;
     };
     return Player;
 }());

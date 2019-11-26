@@ -32,6 +32,6 @@ export default class Card {
     }
 
     public toString(): string {
-        return this.letter + " | " + this.suite + " => " + this.value 
+        return this.letter + "|" + this.suite + " => " + this.value 
     }
 }

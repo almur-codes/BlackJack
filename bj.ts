@@ -1,4 +1,50 @@
-import BlackJack from './BlackJack';
+// import BlackJack from './BlackJack';
 
-let bj = new BlackJack()
-bj.startGame()
+import * as readline from 'readline'
+
+// let blackjack = new BlackJack()
+// blackjack.startGame()
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+
+const question1 = () => {
+    return new Promise((resolve, reject) => {
+        rl.question('q1 What do you think of Node.js? ', (answer) => {
+            console.log(`Thank you for your valuable feedback: ${answer}`)
+            resolve()
+        })
+    })
+}
+
+const question2 = () => {
+    return new Promise((resolve, reject) => {
+        rl.question('q2 What do you think of Node.js? ', (answer) => {
+            console.log(`Thank you for your valuable feedback: ${answer}`)
+            resolve()
+        })
+    })
+}
+
+
+const question3 = (index: number) => {
+    return new Promise((resolve, reject) => {
+        rl.question(`q ${index} What is your name? `, (answer) => {
+            console.log(`Thank you for your valuable feedback: ${answer}`)
+            resolve()
+        })
+    })
+}
+
+const main = async () => {
+    await question1()
+    await question2()
+    for (let index = 3; index < 5; index++) {
+        await question3(index)        
+    }
+    rl.close()
+}
+
+    main()

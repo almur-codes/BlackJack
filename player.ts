@@ -24,7 +24,11 @@ export default class Player {
         this.calculateScore()
     }
 
-    public stay(): void {
+    public clearHand(): void {
+        this.hand = []
+    }
+
+    public stand(): void {
         this.calculateScore()
         this.play.stand = true
     }

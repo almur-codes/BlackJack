@@ -1,10 +1,10 @@
 "use strict";
 exports.__esModule = true;
 var Player = /** @class */ (function () {
-    function Player(name, hand, play) {
+    function Player(name) {
         this.name = name;
-        this.hand = hand;
-        this.play = play;
+        this.hand = [];
+        this.play = { bust: false, stand: false };
         this.calculateScore();
     }
     Player.prototype.hitMe = function (card) {
@@ -21,9 +21,15 @@ var Player = /** @class */ (function () {
     Player.prototype.isStanding = function () {
         return this.play.stand;
     };
+    Player.prototype.getName = function () {
+        return this.name;
+    };
+    Player.prototype.getScore = function () {
+        return this.score;
+    };
     Player.prototype.calculateScore = function () {
         var total = 0;
-        this.hand.forEach(function (card) { return total += card.value; });
+        this.hand.forEach(function (card) { return total += card.getValue(); });
         this.score = Number(total);
         if (total > 21) {
             this.play.bust = true;

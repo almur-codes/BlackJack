@@ -1,5 +1,7 @@
 import Deck from "./Deck"
-import Player from './Player';
+import Player from './Player'
+import * as readline from 'readline'
+import { resolve } from "dns"
 
 export default class BlackJack {
 
@@ -7,13 +9,45 @@ export default class BlackJack {
 
     private deck: Deck
 
+    // private rl = readline.createInterface({
+    //     input: process.stdin,
+    //     output: process.stdout
+    // })
+
+    // private question = (question: string) => {
+    //     return new Promise((resolve, reject) => {
+    //         this.rl.question(question, (answer) => {
+    //             console.log('Okay')
+    //             resolve()
+    //             return answer
+    //         })
+    //     })
+    // }
+
+    // private async askQuestion(question: string) {
+    //     this.question(question).then((ans) => {
+    //         return ans
+    //     })
+    // }
+
     public constructor(){
+        // this.question("New Game of Black Jack\nHow Many Players\n").then((ans) => {
+        //     console.log(ans)
+        // })
+        let numberOfPlayers: number | string
+        const read = readline.createInterface({input: process.stdin, output: process.stdout})
+        read.question("New Game of Black Jack\nHow Many Players?", (answer) => {
+            numberOfPlayers = answer
+            console.log(numberOfPlayers)
+        })
+        return
         // let numberOfPlayers: number | string = prompt("New Game of Black Jack\nHow Many Players")
-        // numberOfPlayers = Number(numberOfPlayers)
+        
+        numberOfPlayers = Number(numberOfPlayers)
         let playerNames: Array<string> = []
-        for (let index: number = 0; index < 4; index++) {
-            // let name: string = prompt("Enter player " + (index + 1) + "'s name")
-            let name: string = "Player " + (index + 1)
+        for (let index: number = 0; index < numberOfPlayers; index++) {
+            let name: string = prompt("Enter player " + (index + 1) + "'s name")
+            // let name: string = "Player " + (index + 1)
             playerNames.push(name)
         }
         this.addPlayersToGame(playerNames)
@@ -119,3 +153,5 @@ export default class BlackJack {
         }
     }
 }
+
+let bj = new BlackJack()

@@ -7,6 +7,9 @@ var Card = /** @class */ (function () {
         this.suite = suite;
         this.value = this.setCardValue(letter, valueOfA);
     }
+    Card.prototype.getValue = function () {
+        return this.value;
+    };
     Card.prototype.setCardValue = function (cardLetter, valueOfA) {
         if (Constants_1["default"].CardTypes.indexOf(cardLetter) === 0) {
             if (valueOfA) {

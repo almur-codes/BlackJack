@@ -2,21 +2,49 @@
 exports.__esModule = true;
 var Deck_1 = require("./Deck");
 var Player_1 = require("./Player");
+var readline = require("readline");
 var BlackJack = /** @class */ (function () {
+    // private rl = readline.createInterface({
+    //     input: process.stdin,
+    //     output: process.stdout
+    // })
+    // private question = (question: string) => {
+    //     return new Promise((resolve, reject) => {
+    //         this.rl.question(question, (answer) => {
+    //             console.log('Okay')
+    //             resolve()
+    //             return answer
+    //         })
+    //     })
+    // }
+    // private async askQuestion(question: string) {
+    //     this.question(question).then((ans) => {
+    //         return ans
+    //     })
+    // }
     function BlackJack() {
         this.players = [];
+        // this.question("New Game of Black Jack\nHow Many Players\n").then((ans) => {
+        //     console.log(ans)
+        // })
+        var numberOfPlayers;
+        var read = readline.createInterface({ input: process.stdin, output: process.stdout });
+        read.question("New Game of Black Jack\nHow Many Players?", function (answer) {
+            numberOfPlayers = answer;
+            console.log(numberOfPlayers);
+        });
+        return;
         // let numberOfPlayers: number | string = prompt("New Game of Black Jack\nHow Many Players")
-        // numberOfPlayers = Number(numberOfPlayers)
+        numberOfPlayers = Number(numberOfPlayers);
         var playerNames = [];
-        for (var index = 0; index < 4; index++) {
-            // let name: string = prompt("Enter player " + (index + 1) + "'s name")
-            var name_1 = "Player " + (index + 1);
+        for (var index = 0; index < numberOfPlayers; index++) {
+            var name_1 = prompt("Enter player " + (index + 1) + "'s name");
+            // let name: string = "Player " + (index + 1)
             playerNames.push(name_1);
         }
         this.addPlayersToGame(playerNames);
     }
     BlackJack.prototype.startGame = function () {
-        // this.resetGame()
         var _this = this;
         this.deck = new Deck_1["default"]();
         this.players.forEach(function (player) {
@@ -37,7 +65,7 @@ var BlackJack = /** @class */ (function () {
     BlackJack.prototype.addPlayersToGame = function (playerNames) {
         var _this = this;
         playerNames.forEach(function (name) {
-            _this.players.push(new Player_1["default"](name, [], { bust: false, stand: false }));
+            _this.players.push(new Player_1["default"](name));
         });
     };
     BlackJack.prototype.getWinner = function () {
@@ -51,7 +79,7 @@ var BlackJack = /** @class */ (function () {
                 winner: false
             });
             if (!player.isBust()) {
-                highestScoringPlayer = (highestScoringPlayer.score > player.score) ? highestScoringPlayer : player;
+                highestScoringPlayer = (highestScoringPlayer.getScore() > player.getScore()) ? highestScoringPlayer : player;
             }
         });
         this.display(highestScoringPlayer, { info: false, warning: false, bust: false, winner: true });
@@ -66,7 +94,7 @@ var BlackJack = /** @class */ (function () {
     BlackJack.prototype.playARound = function (player) {
         this.display(player, { info: true, warning: false, bust: false, winner: false });
         // let input: string = prompt( player.name + "'s turn. Hit or Stay?" )
-        var input = (player.score < 16) ? 'hit' : 'stay';
+        var input = (player.getScore() < 16) ? 'hit' : 'stay';
         input = input.toLocaleLowerCase();
         if (input === "hit") {
             player.hitMe(this.deck.deal());
@@ -90,15 +118,16 @@ var BlackJack = /** @class */ (function () {
             console.log(player.toString());
         }
         if (type.warning) {
-            console.log(player.name + " invalid move. Please try again");
+            console.log(player.getName() + " invalid move. Please try again");
         }
         if (type.bust) {
-            console.log(player.name + " is bust!!\n" + player.toString());
+            console.log(player.getName() + " is bust!!\n" + player.toString());
         }
         if (type.winner) {
-            console.log(player.name + " is the Winner!!\n" + player.toString());
+            console.log(player.getName() + " is the Winner!!\n" + player.toString());
         }
     };
     return BlackJack;
 }());
 exports["default"] = BlackJack;
+var bj = new BlackJack();

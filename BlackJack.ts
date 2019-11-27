@@ -1,7 +1,6 @@
 import Deck from "./Deck"
-import Player from './Player'
-import * as readline from 'readline'
-import { resolve } from "dns"
+import Player from './Player';
+import * as readline from 'readline';
 
 export default class BlackJack {
 
@@ -31,29 +30,55 @@ export default class BlackJack {
     // }
 
     public constructor(){
-        // this.question("New Game of Black Jack\nHow Many Players\n").then((ans) => {
-        //     console.log(ans)
-        // })
-        let numberOfPlayers: number | string
-        const read = readline.createInterface({input: process.stdin, output: process.stdout})
-        read.question("New Game of Black Jack\nHow Many Players?", (answer) => {
-            numberOfPlayers = answer
-            console.log(numberOfPlayers)
-        })
-        return
-        // let numberOfPlayers: number | string = prompt("New Game of Black Jack\nHow Many Players")
-        
-        numberOfPlayers = Number(numberOfPlayers)
-        let playerNames: Array<string> = []
-        for (let index: number = 0; index < numberOfPlayers; index++) {
-            let name: string = prompt("Enter player " + (index + 1) + "'s name")
-            // let name: string = "Player " + (index + 1)
-            playerNames.push(name)
-        }
-        this.addPlayersToGame(playerNames)
+        this.getNumberOfPlayers()
+
+        this.startGame()
     }
 
-    public startGame(): void {       
+    private getNumberOfPlayers(){
+        let numPlayers: number = 0
+    
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+    
+        rl.setPrompt('How many players are playing > ')
+        rl.prompt()
+        rl.on('line', (line) => {
+            if (Number.isInteger(parseFloat(line)) && Number(line) > 0) {
+                numPlayers = Number(line)
+                rl.close()
+                this.createPlayers(numPlayers)
+            } else {
+                console.log("Not a number or not a valid number of players, Please try again")
+                rl.prompt()
+            }
+        })
+    }
+    
+    private createPlayers(numberOfPlayers: number) {
+        const read = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+        
+        read.setPrompt('Enter Your Name > ');
+        read.prompt();
+        read.on('line', (line) => {
+            this.players.push(new Player(line))
+            if( this.players.length > numberOfPlayers ){
+                read.close()
+            }
+            read.prompt()
+        }).on('close', () => {
+            // console.log('Have a great day!');
+            // console.log(this.players)
+            process.exit(0);
+        });
+    }
+
+    public startGame(): void {
         this.deck = new Deck()
     
         this.players.forEach((player: Player) => {
@@ -66,7 +91,7 @@ export default class BlackJack {
                 this.playARound( player )
             })
         }
-    
+        
         this.getWinner()
     }
 
@@ -82,7 +107,9 @@ export default class BlackJack {
     }
 
     private getWinner(): void {
-        let highestScoringPlayer: Player = this.players[0]
+        if(this.players.length < 1) return
+
+        let highestScoringPlayer: Player | null = null
         this.players.forEach((player: Player) => {
             this.display(player, {
                 info: true,
@@ -91,7 +118,7 @@ export default class BlackJack {
                 winner: false
             })
             if ( !player.isBust() ) {
-                highestScoringPlayer = ( highestScoringPlayer.getScore() > player.getScore() ) ? highestScoringPlayer : player
+                highestScoringPlayer = ( highestScoringPlayer.getScore() > player.getScore() && !highestScoringPlayer ) ? highestScoringPlayer : player
             }
         })
         this.display( highestScoringPlayer, {info: false, warning: false, bust: false, winner: true} )
@@ -108,31 +135,47 @@ export default class BlackJack {
     private playARound(player: Player): void {
         this.display( player, {info: true, warning: false, bust: false, winner: false} )
         
-        // let input: string = prompt( player.name + "'s turn. Hit or Stay?" )
         let input: string = (player.getScore() < 16) ? 'hit' : 'stay'
-        
-        input = input.toLocaleLowerCase()
-        
-        if( input === "hit" ){
-            player.hitMe(this.deck.deal())
 
-            if( player.isBust() ){
-                this.display( player, {info: false, warning: false, bust: true, winner: false})
+        // input = input.toLocaleLowerCase()
+
+        const read = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+
+        read.setPrompt('Hit or Stand > ');
+        read.prompt();
+        read.on('line', (line) => {
+            line = line.toLocaleLowerCase()
+
+            if( line === "hit" ){
+                player.hitMe(this.deck.deal())
+    
+                if( player.isBust() ){
+                    this.display( player, {info: false, warning: false, bust: true, winner: false})
+                    read.close()
+                    return
+                }
+                
+                read.close()
+                this.playARound( player )
+                return
+            }
+    
+            if( line === "stay" ){
+                player.stay()
+                read.close()
                 return
             }
             
+            this.display( player, {info: false, warning: true, bust: false, winner: false} )
+            read.close()
             this.playARound( player )
             return
-        }
-
-        if( input === "stay" ){
-            player.stay()
-            return
-        }
-        
-        this.display( player, {info: false, warning: true, bust: false, winner: false} )
-        this.playARound( player )
-        return
+        }).on('close', () => {
+            process.exit(0);
+        });
     }
 
     private display( player: Player, type: { info: boolean, warning: boolean, bust: boolean, winner: boolean } ): void {

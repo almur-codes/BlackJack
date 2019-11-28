@@ -39,14 +39,16 @@ export default class BlackJack {
 
     private async startGame(): Promise<void> {
         this.deck = new Deck()
-    
-        this.players.forEach((player: Player) => {
+        
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
             player.hitMe(this.deck.deal())
             player.hitMe(this.deck.deal())
-        });
+        }
 
         for (let index = 0; index < this.players.length; index++) {
-            await this.playARound( this.players[index] )                
+            console.log("")
+            await this.playARound( this.players[index] )
         }
         
         await this.getWinner()
@@ -92,6 +94,7 @@ export default class BlackJack {
         if(this.players.length < 1) return
 
         let highestScoringPlayer: Player | null = null
+
         this.players.forEach((player: Player) => {
             this.display(player, {
                 info: true,
@@ -99,15 +102,35 @@ export default class BlackJack {
                 bust: false,
                 winner: false
             })
-            if( !highestScoringPlayer ){
-                highestScoringPlayer = player
-            } else {
-                if ( !player.isBust() ) {
-                    // handle draws
+            if ( !player.isBust() ) {
+                if( !highestScoringPlayer ){
+                    highestScoringPlayer = player
+                } else {
                     highestScoringPlayer = ( highestScoringPlayer.getScore() > player.getScore() ) ? highestScoringPlayer : player
                 }
             }
         })
+        if( !highestScoringPlayer ){
+            console.log("All players are bust. No Winner!!")
+            return
+        }
+        this.checkForTies(highestScoringPlayer)
+    }
+
+    private checkForTies(highestScoringPlayer: Player): void {
+        let tiedPlayers: Array<Player> = this.players.slice().filter((player: Player) => player.getScore() === highestScoringPlayer.getScore())
+
+        if( tiedPlayers.length < 1 ) {
+            // unexpected error. Should always return at least one player
+            throw new Error("Unexpected Error")
+        }
+        if( tiedPlayers.length > 1 ){
+            // if there is a tie nobody wins
+            console.log("Tie! Nobody wins") // or  the tied players can split the bet
+            return
+        }
+
+        // no tie
         this.display( highestScoringPlayer, {info: false, warning: false, bust: false, winner: true} )
     }
     

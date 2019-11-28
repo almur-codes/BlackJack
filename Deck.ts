@@ -1,13 +1,12 @@
 import Card from './Card';
-import Constants from "./Constants";
 
 export default class Deck {
 
     private cards: Array<Card> = []
 
     public constructor() {
-        Constants.CardTypes.forEach(cardType => {
-            Constants.CardSuites.forEach(cardSuite => {
+        Card.CardTypes.forEach(cardType => {
+            Card.CardSuites.forEach(cardSuite => {
                 this.cards.push(new Card(cardType, cardSuite))
             })
         });
@@ -21,8 +20,6 @@ export default class Deck {
     public deal(): Card {    
         let cardIndex: number =  Math.floor((Math.random() * (this.cards.length - 1)))
     
-        let card: Array<Card> = this.cards.splice(cardIndex, 1)
-    
-        return card.pop()
+        return this.cards.splice(cardIndex, 1).pop()
     }
 }

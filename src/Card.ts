@@ -10,7 +10,7 @@ export default class Card {
     public constructor( letter: string, suite: string ){
         this.letter = letter
         this.suite = suite
-        this.value = this.setValue(letter)
+        this.setValue()
     }
 
     public getValue(): number {
@@ -21,20 +21,28 @@ export default class Card {
         return this.letter
     }
 
-    public setValue(cardLetter: string, valueOfA?: number | undefined): number {
-        if( Card.CardTypes.indexOf(cardLetter) === 0 ){
-            if( valueOfA ){
-                return Number(valueOfA)
+    public getSuite(): string {
+        return this.suite
+    }
+
+    public setValue(valueOfAce?: number | undefined): number {
+        if( Card.CardTypes.indexOf(this.letter) === 0 ){
+            if( valueOfAce ){
+                this.value = Number(valueOfAce)
+                return
             }
-            return 11 // or 1
+            this.value = 11 // or 1
+            return
         }
 
-        if( Card.CardTypes.indexOf(cardLetter) > 0 && Card.CardTypes.indexOf(cardLetter) < 10 ){
-            return Number(cardLetter)
+        if( Card.CardTypes.indexOf(this.letter) > 0 && Card.CardTypes.indexOf(this.letter) < 10 ){
+            this.value = Number(this.letter)
+            return
         }
     
-        if( Card.CardTypes.indexOf(cardLetter) > 9 && Card.CardTypes.indexOf(cardLetter) < 13 ){
-            return 10
+        if( Card.CardTypes.indexOf(this.letter) > 9 && Card.CardTypes.indexOf(this.letter) < 13 ){
+            this.value = 10
+            return
         }
 
         throw new Error("Unexpected out of bounds")

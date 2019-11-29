@@ -5,11 +5,15 @@ export default class Deck {
     private cards: Array<Card> = []
 
     public constructor() {
-        Card.CardTypes.forEach(cardType => {
+        ['A', 'J', '2'].forEach(cardType => {
             Card.CardSuites.forEach(cardSuite => {
                 this.cards.push(new Card(cardType, cardSuite))
             })
         });
+    }
+
+    public getCards(): Array<Card> {
+        return this.cards;
     }
 
     /**

@@ -1,105 +1,106 @@
-import BlackJack from './BlackJack';
-let blackJack: BlackJack = new BlackJack()
+// import BlackJack from './src/BlackJack';
+import Card from './src/Card';
+import * as readline from 'readline';
+import Deck from './src/Deck';
+// let blackJack: BlackJack = new BlackJack()
 
-// import * as readline from 'readline'
-// import Player from './player'
+async function handleQuestion(question: string): Promise<number> {
+    let value: string | number = await askQuestion(question)
+    value = parseInt(value)
+    if(value === 11 || value === 1){
+        return value
+    }
+    return handleQuestion(question)
+}
 
-// const read = readline.createInterface({input: process.stdin, output: null, removeHistoryDuplicates: true})
+const read: readline.Interface = readline.createInterface({input: process.stdin, output: process.stdout})
 
-// async function mainTest (): Promise<void> {
-//     let numberOfPlayers: string | number = await question("How many players > ")
-//     numberOfPlayers = Number(numberOfPlayers)
-//     let players: Player[] = []
-//     // for (let index = 0; index < numberOfPlayers; index++) {
-//         let playerName: string = await question(`What is player's name > `)
-//         players.push( new Player( playerName ) )   
-        
-//         playerName = await question(`What is player's name > `)
-//         players.push( new Player( playerName ) )   
+function askQuestion (question: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        read.question(question, (answer) => resolve(answer))
+    })
+}
 
-//         playerName = await question(`What is player's name > `)
-//         players.push( new Player( playerName ) )   
+async function handlingAces(hand: Card[]): Promise<Card[]> {
+    // calculate value of hand with out aces
+    let handWithoutAces: Card[] = hand.filter((card: Card) => card.getLetter() !== 'A')
+    let totalWithoutAces: number = 0
+    handWithoutAces.forEach((card: Card) => {
+        totalWithoutAces += card.getValue()
+    });
+    
+    // if totalWithoutAces > 10 all aces must have a value of 1
+    let acesInHand: Card[] = hand.filter((card: Card) => card.getLetter() === 'A')
+    if( totalWithoutAces > 10 ){
+        let newHand: Card[] = handWithoutAces.slice()
+        acesInHand.forEach((card: Card) => {
+            card.setValue( 1 )
+            newHand.push( card )
+        });
+        // read.close()
+        return newHand
+    }
 
-//         playerName = await question(`What is player's name > `)
-//         players.push( new Player( playerName ) )
-//     // }
-//     console.log( players.map((player: Player) => player.toString()) )
-//     read.close()
-// }
+    // if totalWithoutAces < 11 only one ace value can be chosen the rest have values of 1 by default
+    let hasMultipleAcesInHand: boolean = false
+    let returnHand: Card[] = handWithoutAces.slice()
+    for (let index = 0; index < acesInHand.length; index++) {
+        const card: Card = acesInHand[index];
+        if( !hasMultipleAcesInHand ){
+            let value: number = await handleQuestion("What is the value of Ace > ")
+            card.setValue( value )
+            returnHand.push( card )
+            hasMultipleAcesInHand = value === 11
+        } else {
+            card.setValue( 1 )
+            returnHand.push( card )
+        }
+    }
+    // read.close()
+    return returnHand
+}
 
-// function question (question: string): Promise<string> {
-//     // const read = readline.createInterface({input: process.stdin, output: process.stdout, removeHistoryDuplicates: true})
+function displayHand(hand: Card[]): void {
+    let total: number = 0
+    hand.forEach((card: Card) => {
+        total += card.getValue()
+    })
+    console.log(hand)
+    console.log(`total = ${total}`)
+}
 
-//     return new Promise((resolve, reject) => {
-//         read.question(question, (answer) => {
-//             // read.close()
-//             resolve(answer)
-//         })
-//     })
-// }
+async function test(): Promise<void> {
+    let testHands: Array<Array<Card>> = [
+        [new Card('A', 'Heart'), new Card('A', 'Spade')],
+        [new Card('A', 'Heart'), new Card('J', 'Spade'), new Card('A', 'Spade')],
+        [new Card('K', 'Heart'), new Card('8', 'Spade'), new Card('A', 'Spade')],
+    ]
+    
+    for (let index = 0; index < testHands.length; index++) {
+        const hand = testHands[index];
+        displayHand( await handlingAces( hand ) )  
+    }
+}
 
-// mainTest()
+testTwo().then()
 
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-// })
+async function testTwo(){
+    let playerHand: Card[] = []
+    let score: number = 0
+    let deck: Deck = new Deck()
+    while ( score < 22 ){
+        score = 0
 
-// const question1 = () => {
-//     return new Promise((resolve, reject) => {
-//         rl.question('q1 What do you think of Node.js? ', (answer) => {
-//             console.log(`Thank you for your valuable feedback: ${answer}`)
-//             resolve(answer)
-//         })
-//     })
-// }
+        playerHand.push( deck.deal() )
 
-// const question2 = () => {
-//     return new Promise((resolve, reject) => {
-//         rl.question('q2 What do you think of Node.js? ', (answer) => {
-//             console.log(`Thank you for your valuable feedback: ${answer}`)
-//             resolve(answer)
-//         })
-//     })
-// }
+        playerHand = await handlingAces( playerHand )
 
+        displayHand( playerHand )
 
-// const question3 = (i: number): Promise<string> => {
-//     return new Promise((resolve, reject) => {
-//         rl.question(`q${i} What is your age? `, (answer) => {
-//             if( isNaN(Number(answer)) ){
-//                 reject(new Error("Not a valid number"))
-//                 return
-//             }
-//             console.log(`Thank you for your valuable feedback: ${answer}`)
-//             resolve(answer)
-//         })
-//     })
-// }
+        playerHand.forEach((card: Card) => {
+            score += card.getValue()
+        })
+    }
+    read.close()
+}
 
-// const main = async () => {
-//     console.log('one')
-//     await question1()
-//     console.log('two')
-//     let x = await question3()
-
-//     try {
-//         let x = await question3()
-//         console.log(x)
-//     } catch (error) {
-//         console.log("AN ERROR OCCURRED")
-//         throw error
-//     }
-
-//     console.log(x)
-
-//     console.log('three')
-//     for (let index = 3; index < 6; index++) {
-//         try {
-//             // await question3(index)
-//         } catch (error) {
-//             console.log("Invalid input...")
-//         }
-//     }
-//     rl.close()
-// }

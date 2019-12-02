@@ -131,6 +131,7 @@ export default class BlackJack {
         }
 
         // no tie
+        console.log("")
         this.display( highestScoringPlayer, {info: false, warning: false, bust: false, winner: true} )
     }
     

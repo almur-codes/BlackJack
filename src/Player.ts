@@ -79,7 +79,8 @@ export default class Player {
             for (let index = 0; index < acesInHand.length; index++) {
                 const ace: Card = acesInHand[index];
                 if( !hasAnAceBeenSetAsEleven ){
-                    let value: number = await this.askQuestion("What is the value of Ace (11 or 1) > ")
+                    // let value: number = await this.askQuestion("What is the value of Ace (11 or 1) > ")
+                    let value: number = 11
                     ace.setValue( value )
                     hasAnAceBeenSetAsEleven = (value === 11)
                 } else {

@@ -2,13 +2,13 @@ import Card from './Card';
 
 export default class Deck {
 
-    private cards: Array<Card> = []
+    private cards: Array<Card> = [];
 
     public constructor() {
         Card.CardTypes.forEach(cardType => {
             Card.CardSuites.forEach(cardSuite => {
-                this.cards.push(new Card(cardType, cardSuite))
-            })
+                this.cards.push(new Card(cardType, cardSuite));
+            });
         });
     }
 
@@ -22,8 +22,8 @@ export default class Deck {
      * @returns Card
      */
     public deal(): Card {    
-        let cardIndex: number =  Math.floor((Math.random() * (this.cards.length - 1)))
+        let cardIndex: number =  Math.floor((Math.random() * (this.cards.length - 1)));
     
-        return this.cards.splice(cardIndex, 1).pop()
+        return this.cards.splice(cardIndex, 1).pop();
     }
 }

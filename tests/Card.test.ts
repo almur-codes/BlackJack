@@ -19,6 +19,6 @@ test('There shoud be 4 different card suites', () => {
     expect( Card.CardSuites.length ).toBe(4);
 });
 
-test('Card letter should be a string and should be found in the card types array', () => {
+test('Card letter should be found in the card types array', () => {
     expect( Card.CardTypes.indexOf(card.getLetter()) ).not.toStrictEqual(-1);
 });

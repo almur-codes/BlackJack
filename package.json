@@ -12,6 +12,6 @@
     },
     "scripts": {
         "test": "jest",
-        "testwatch": "jest --watchAll"
+        "test:watch": "jest --watchAll"
     }
 }

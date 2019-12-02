@@ -19,19 +19,19 @@ test('Should increase players hand by one', () => {
     expect( player.getScore() ).toBeGreaterThan(0)
 });
 
-test('should automatically set Ace to 1', () => {
+test('Should automatically set Ace to 1', async () => {
     let player: Player = new Player("Test")
-    player.hitMe(new Card('A', 'Spade'))
-    player.hitMe(new Card('J', 'Heart'))
-    player.hitMe(new Card('2', 'Heart'))
+    await player.hitMe(new Card('A', 'Spade'))
+    await player.hitMe(new Card('J', 'Heart'))
+    await player.hitMe(new Card('2', 'Heart'))
     expect( player.getScore() ).toBe(13)
 })
 
-test('should ask player to set value of Ace', () => {
+test('Should set one Ace to 11 and all others to 1', async () => {
     let player: Player = new Player("Test")
-    player.hitMe(new Card('A', 'Spade'))
-    player.hitMe(new Card('8', 'Heart'))
-    player.hitMe(new Card('2', 'Heart'))
-    expect( player.getScore() ).toBeGreaterThan(10)
-    expect( player.getScore() ).toBeLessThan(22)
+    await player.hitMe(new Card('A', 'Spade'))
+    await player.hitMe(new Card('A', 'Spade'))
+    await player.hitMe(new Card('6', 'Heart'))
+    await player.hitMe(new Card('2', 'Heart'))
+    expect( player.getScore() ).toBe(20)
 })

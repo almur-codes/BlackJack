@@ -19,6 +19,6 @@ test('Should increase players hand by one', () => {
     expect( player.getScore() ).toBeGreaterThan(0)
 });
 
-test('should ', () => {
+// test('should ', () => {
     
-})
+// })

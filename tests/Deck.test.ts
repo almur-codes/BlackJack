@@ -18,8 +18,13 @@ test('Deck should have exactly 52 (13 x 4) cards', () => {
     expect( deck.getCards().length ).toBe(52)
 })
 
-test('Should return a card and remove it from deck', () => {    
-    expect( deck.deal() ).toBeInstanceOf(Card)
+test('Deal function should return a card and remove it from deck', () => {    
+    let cardDealt: Card = deck.deal()
+    expect( cardDealt ).toBeInstanceOf(Card)
 
+    expect( deck.getCards().filter((card: Card) => {
+        return (card.getLetter() === cardDealt.getLetter() && card.getSuite() === cardDealt.getSuite())
+    }).length ).toBe(0)
+    
     expect( deck.getCards().length ).toBe(51)
 })

@@ -1,8 +1,7 @@
 import Card from "./Card";
-import * as readline from "readline";
-import { ADDRCONFIG } from "dns";
+import ScoreBoard from './ScoreBoard';
 
-interface Plays {
+interface Moves {
     bust: boolean
     stand: boolean
 };
@@ -12,36 +11,38 @@ export default class Player {
     private name: string;
     private hand: Array<Card>;
     private score: number;
-    private play: Plays;
+    private move: Moves;
+    private updateScoreBoard: () => void;
 
-    private readonly read: readline.Interface = readline.createInterface({input: process.stdin, output: process.stdout});
-
-    public constructor(name: string){
+    public constructor(name: string, callback?: () => void){
         this.name = name;
         this.hand = [];
-        this.play = { bust: false, stand: false };
+        this.move = { bust: false, stand: false };
         this.score = 0;
+        this.updateScoreBoard = callback;
     }
 
-    public async hitMe(card: Card): Promise<void> {
+    public hitMe(card: Card): void {
         this.hand.push(card);
         this.calculateScore();
     }
 
-    public clearHand(): void {
+    public reset(): void {
         this.hand = [];
+        this.score = 0;
+        this.move = { bust: false, stand: false };
     }
 
     public stand(): void {
-        this.play.stand = true;
+        this.move.stand = true;
     }
 
     public isBust(): boolean {
-        return this.play.bust;
+        return this.move.bust;
     }
 
     public isStanding(): boolean {
-        return this.play.stand;
+        return this.move.stand;
     }
 
     public getName(): string {
@@ -56,8 +57,8 @@ export default class Player {
         return this.hand;
     }
 
-    private async calculateScore(): Promise<void> {
-        let handWithoutAces: Array<Card> = this.hand.filter((card: Card) => card.getLetter().toUpperCase() !== 'A');
+    private calculateScore(): void {
+        let handWithoutAces: Array<Card> = this.hand.filter((card: Card) => !card.isAce());
         let newHand: Array<Card> = handWithoutAces.slice();
         
         // calculate value of hand with out aces
@@ -67,7 +68,7 @@ export default class Player {
         });
         
         // if totalWithoutAces > 10 all aces must have a value of 1
-        let acesInHand: Array<Card> = this.hand.filter((card: Card) => card.getLetter().toUpperCase() === 'A');
+        let acesInHand: Array<Card> = this.hand.filter((card: Card) => card.isAce());
         if( totalWithoutAces > 10 ){
             acesInHand.forEach((ace: Card) => {
                 ace.setValue( 1 );
@@ -96,29 +97,20 @@ export default class Player {
         
         this.hand.forEach((card: Card) => {
             total += card.getValue();
-        })
+        });
 
         this.score = Number(total);
 
         if( this.score > 21 ){
-            this.play.bust = true;
+            this.move.bust = true;
             this.score = 0;
         }
+
+        // ScoreBoard.generateScoreBoard();
+        this.updateScoreBoard;
     }
 
     public toString(): string {
-        return `Name: ${this.name}; Hand: ${this.hand.map((card: Card) => " " + card.toString())}; Score: ${this.score}`;
-    }
-
-    private async askQuestion (question: string): Promise<number> {
-        let answer: string | number = await new Promise((resolve, reject) => {
-            this.read.question(question, (answer) => resolve(answer));
-        });
-
-        answer = Number(answer);
-        if(answer === 11 || answer === 1){
-            return answer;
-        }
-        return this.askQuestion(question);
+        return `Name: ${this.name}; Hand:${this.hand.map((card: Card) => " " + card.toString())}; Score: ${this.score}`;
     }
 }

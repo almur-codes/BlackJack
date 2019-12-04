@@ -1,21 +1,21 @@
 import Deck from "./Deck";
 import Player from './Player';
-import * as readline from 'readline';
+import InputOutputHandler from './InputOutputHandler';
+import ScoreBoard from './ScoreBoard';
 
 export default class BlackJack {
 
-    private players: Array<Player> = [];
-
     private deck: Deck;
 
-    private readonly read: readline.Interface = readline.createInterface({input: process.stdin, output: process.stdout});
+    private inputOutputHandler: InputOutputHandler;
 
     public constructor(){
+        this.inputOutputHandler = new InputOutputHandler();
         this.setUpGame();
     }
 
     private async setUpGame(): Promise<void> {
-        console.log("New Game of Black Jack!!")
+        console.log("New Game of Black Jack!!");
         await this.addPlayersToGame();
 
         console.log("Start Game!!");
@@ -23,58 +23,68 @@ export default class BlackJack {
     }
     
     private async addPlayersToGame(): Promise<void> {
-        let numberOfPlayers: string | number = await this.askQuestion("How many players will be playing > ");
-        numberOfPlayers = parseInt(numberOfPlayers);
+        let numberOfPlayers: number = Number( await this.inputOutputHandler.getInitialNumberOfPlayers() )
 
-        if(isNaN(numberOfPlayers)){
+        if(isNaN(numberOfPlayers) || numberOfPlayers < 2){
             console.log("Invalid number of players, please try again.");
             return this.addPlayersToGame();
         }
         
+        let players: Array<Player> = [];
+        
         for (let index = 0; index < numberOfPlayers; index++) {
-            let playerName: string = await this.askQuestion(`Enter player ${index + 1}'s name > `);
-            this.players.push( new Player( playerName ) );
+            let playerName: string = await this.inputOutputHandler.getPlayersName( index + 1 )
+            players.push( new Player( playerName, ScoreBoard.generateScoreBoard ) );
         }
+
+        ScoreBoard.create( players );
     }
 
     private async startGame(): Promise<void> {
         this.deck = new Deck();
         
-        for (let i = 0; i < this.players.length; i++) {
-            const player = this.players[i];
+        for (let i = 0; i < ScoreBoard.getPlayers().length; i++) {
+            const player: Player = ScoreBoard.getPlayers()[i];
             player.hitMe(this.deck.deal());
             player.hitMe(this.deck.deal());
-        }
-
-        for (let index = 0; index < this.players.length; index++) {
-            console.log("");
-            await this.playARound( this.players[index] );
         }
         
-        await this.getWinner();
+        for (let index = 0; index < ScoreBoard.getPlayers().length; index++) {
+            const player: Player = ScoreBoard.getPlayers()[index];
+            console.log("");
+            await this.playARound( player );
+        }
+        
+        console.log("\nEnd of the Game\n");
+        let winners: Array<Player> = ScoreBoard.getWinner();
+        if( winners.length > 1 ){
+            console.log("Tie! Nobody wins");
+        } else {
+            InputOutputHandler.displayWinner( winners.pop() );
+        }
 
-        let playAgain: string = await this.askQuestion("Play again? (Yes, No) > ");
-        playAgain = playAgain.toLocaleLowerCase();
+        InputOutputHandler.displayBoard();
+
+        let playAgain: string = await this.inputOutputHandler.getUsersPlayAgainResponse();
+
         if( playAgain === "yes" ){
             this.resetGame();
             return this.startGame();
         }
-        this.read.close();
+        this.inputOutputHandler.close();
         return;
     }
 
     private async playARound(player: Player): Promise<void> {
-        this.display( player, {info: true, warning: false, bust: false, winner: false} );
+        InputOutputHandler.displayInfo( player );
 
-        let input: string = await this.askQuestion(player.getName() + " will you HIT or STAND > ") ;
-
-        input = input.toLocaleLowerCase();
+        let input: string = await this.inputOutputHandler.getPlayersMove( player );
 
         if( input === "hit" ){
-            await player.hitMe(this.deck.deal());
+            player.hitMe(this.deck.deal());
 
             if( player.isBust() ){
-                this.display( player, {info: false, warning: false, bust: true, winner: false});
+                InputOutputHandler.displayAlert( player );
                 return;
             }
             
@@ -86,91 +96,13 @@ export default class BlackJack {
             return;
         }
         
-        this.display( player, {info: false, warning: true, bust: false, winner: false} );
+        InputOutputHandler.displayWarning( player );
         return this.playARound( player );
-    }
-
-    private getWinner(): Promise<void> {
-        if(this.players.length < 1) return;
-
-        let highestScoringPlayer: Player | null = null;
-
-        this.players.forEach((player: Player) => {
-            this.display(player, {
-                info: true,
-                warning: false,
-                bust: false,
-                winner: false
-            });
-            if ( !player.isBust() ) {
-                if( !highestScoringPlayer ){
-                    highestScoringPlayer = player;
-                } else {
-                    highestScoringPlayer = ( highestScoringPlayer.getScore() > player.getScore() ) ? highestScoringPlayer : player;
-                }
-            }
-        })
-        if( !highestScoringPlayer ){
-            console.log("All players are bust. No Winner!!");
-            return;
-        }
-        this.checkForTies(highestScoringPlayer);
-    }
-
-    private checkForTies(highestScoringPlayer: Player): void {
-        let tiedPlayers: Array<Player> = this.players.slice().filter((player: Player) => player.getScore() === highestScoringPlayer.getScore());
-
-        if( tiedPlayers.length < 1 ) {
-            // unexpected error. Should always return at least one player
-            throw new Error("Unexpected Error");
-        }
-        if( tiedPlayers.length > 1 ){
-            // if there is a tie nobody wins
-            console.log("Tie! Nobody wins"); // or the tied players can share the bet
-            return
-        }
-
-        // no tie
-        console.log("");
-        this.display( highestScoringPlayer, {info: false, warning: false, bust: false, winner: true} );
     }
     
     private resetGame(): void {
         this.deck = null;
-        this.players.forEach((player: Player) => {
-            player.clearHand();
-        });
-    }
-
-    private askQuestion (question: string): Promise<string> {
-        return new Promise((resolve, reject) => {
-            this.read.question(question, (answer) => resolve(answer));
-        });
-    }
-
-    private display( player: Player, type: { info: boolean, warning: boolean, bust: boolean, winner: boolean } ): void {
-        if( type.info ){
-            console.log( player.toString() );
-        }
-
-        if( type.warning ){
-            console.log( player.getName() + " invalid move. Please try again" );
-        }
-        
-        if( type.bust ){
-            console.log( player.getName() + " is bust!!\n" + player.toString() );
-        }
-
-        if( type.winner ){
-            console.log( player.getName() + " is the Winner!!\n" + player.toString() );
-        }
-    }
-
-    private areAllPlayersBustOrStanding(): boolean {
-        let verdict: boolean = true;
-        this.players.forEach((player: Player) => {
-            verdict = ( verdict && (player.isBust() || player.isStanding()) );
-        });
-        return verdict;
+        ScoreBoard.reset();
+        ScoreBoard.create( ScoreBoard.getPlayers() )
     }
 }

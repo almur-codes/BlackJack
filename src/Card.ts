@@ -25,8 +25,14 @@ export default class Card {
         return this.suite;
     }
 
+    public isAce(): boolean {
+        return this.letter.toUpperCase() === "A"
+    }
+
+    // add function to hold logic to determine is card is an ace
+
     public setValue(valueOfAce?: number | undefined): number {
-        if( Card.CardTypes.indexOf(this.letter) === 0 ){
+        if( this.isAce() ){
             if( valueOfAce ){
                 this.value = Number(valueOfAce);
                 return;

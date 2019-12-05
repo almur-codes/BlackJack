@@ -71,7 +71,7 @@ export default class BlackJack {
         input = input.toLocaleLowerCase()
 
         if( input === "hit" ){
-            player.hitMe(this.deck.deal())
+            await player.hitMe(this.deck.deal())
 
             if( player.isBust() ){
                 this.display( player, {info: false, warning: false, bust: true, winner: false})

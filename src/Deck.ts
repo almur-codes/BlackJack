@@ -5,7 +5,7 @@ export default class Deck {
     private cards: Array<Card> = []
 
     public constructor() {
-        ['A', 'J', '2'].forEach(cardType => {
+        Card.CardTypes.forEach(cardType => {
             Card.CardSuites.forEach(cardSuite => {
                 this.cards.push(new Card(cardType, cardSuite))
             })

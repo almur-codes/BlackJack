@@ -2,9 +2,10 @@ import Card from './Card';
 
 export default class Deck {
 
-    private cards: Array<Card> = [];
+    private cards: Array<Card>;
 
     public constructor() {
+        this.cards = [];
         Card.CardTypes.forEach(cardType => {
             Card.CardSuites.forEach(cardSuite => {
                 this.cards.push(new Card(cardType, cardSuite));

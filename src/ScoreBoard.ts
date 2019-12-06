@@ -1,22 +1,21 @@
 import Player from './Player';
-import Card from './Card';
 
-export default interface PlayerScore {
+export interface PlayerScore {
     player: Player,
     name: string,
     score: number,
     rank: number
 };
 
-export default class ScoreBoard {
+export class ScoreBoard {
 
-    private static scoreBoard: Array<PlayerScore>;
+    private scoreBoard: Array<PlayerScore>;
 
-    private static players: Array<Player> = [];
+    private players: Array<Player> = [];
 
-    private static checkForTies(highestScoringPlayer: Player): Array<Player> {
+    private checkForTies(highestScoringPlayer: Player): Array<Player> {
         let tiedPlayers: Array<PlayerScore> = this.scoreBoard.slice().filter((playerScore: PlayerScore) => {
-            return playerScore.player.getScore() === highestScoringPlayer.getScore()
+            return playerScore.player.getScore() === highestScoringPlayer.getScore();
         });
 
         if( tiedPlayers.length < 1 ) {
@@ -32,12 +31,14 @@ export default class ScoreBoard {
         return [ highestScoringPlayer ];
     }
 
-    public static create( players: Array<Player> ): void {
+    public constructor(){}
+
+    public create( players: Array<Player> ): void {
         this.players = players;
         this.generateScoreBoard();
     }
 
-    public static generateScoreBoard(): void {
+    public generateScoreBoard(): void {
         if(this.players.length < 1) {
             this.scoreBoard = [];
             // throw new Error("No players in game");
@@ -71,21 +72,21 @@ export default class ScoreBoard {
         });
     }
 
-    public static getPlayers(): Array<Player> {
+    public getPlayers(): Array<Player> {
         return this.players;
     }
 
-    public static getScoreBoard(): Array<PlayerScore> {
+    public getScoreBoard(): Array<PlayerScore> {
         return this.scoreBoard;
     }
 
-    public static getWinner(): Array<Player> {
+    public getWinner(): Array<Player> {
         let highestScoringPlayer: Player = this.scoreBoard.find((player: PlayerScore) => player.rank === 1).player;
         let winners: Array<Player> = this.checkForTies( highestScoringPlayer );
         return winners;
     }
 
-    public static reset(): void {
+    public reset(): void {
         this.scoreBoard = [];
         this.players.forEach((player: Player) => {
             player.reset();

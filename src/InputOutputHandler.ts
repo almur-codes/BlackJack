@@ -1,11 +1,10 @@
 import Player from './Player';
 import * as readline from 'readline';
-import ScoreBoard from './ScoreBoard';
-import PlayerScore from './ScoreBoard';
+import { ScoreBoard, PlayerScore } from "./ScoreBoard";
 
 export default class InputOutputHandler {
 
-    private read: readline.Interface;
+    private inputOutput: readline.Interface;
 
     private readonly questions: object = {
         getNumberOfPlayers: "How many players will be playing > ",
@@ -13,22 +12,25 @@ export default class InputOutputHandler {
         getPlayersMove: " will you HIT or STAND > ",
         getUsersPlayAgainResponse: "Would you like to play again > "
     };
+
+    private scoreBoardClass: ScoreBoard;
     
-    public constructor() {
-        this.read = readline.createInterface({
+    public constructor(scoreBoardClass: ScoreBoard) {
+        this.inputOutput = readline.createInterface({
             input: process.stdin, 
             output: process.stdout
         });
+        this.scoreBoardClass = scoreBoardClass;
     }
 
     private askQuestion (question: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            this.read.question(question, (answer) => resolve(answer));
+            this.inputOutput.question(question, (answer) => resolve(answer));
         });
     }
 
     public close(): void {
-        this.read.close();
+        this.inputOutput.close();
     }
 
     public async getInitialNumberOfPlayers(): Promise<string> {
@@ -47,28 +49,37 @@ export default class InputOutputHandler {
         return (await this.askQuestion( this.questions['getUsersPlayAgainResponse'] )).toLowerCase();
     }
 
-    public static displayInfo(player: Player): void {
-        console.log( player.toString() );
+    public displayCustomMessage( message: string ): void {
+        this.inputOutput.write( message );
+        this.inputOutput.write("\n");
     }
 
-    public static displayWarning(player: Player): void {
-        console.log( player.getName() + " invalid move. Please try again" );
+    public displayInfo(player: Player): void {
+        this.inputOutput.write( player.toDisplayString() );
+        this.inputOutput.write("\n");
     }
 
-    public static displayAlert(player: Player): void {
-        console.log( player.getName() + " is bust!!\n" + player.toString() );
+    public displayWarning(player: Player): void {
+        this.inputOutput.write("\n");
+        this.inputOutput.write( player.getName() + " invalid move. Please try again" );
     }
 
-    public static displayWinner(player: Player): void {
-        console.log( player.getName() + " is the Winner!!\n" + player.toString() );
+    public displayAlert(player: Player): void {
+        this.inputOutput.write("\n");
+        this.inputOutput.write( player.getName() + " is bust!!\n" + player.toDisplayString() );
+        this.inputOutput.write("\n");
     }
 
-    public static displayBoard(): void {
-        console.log("\n\nBoard");
-        ScoreBoard.getScoreBoard().forEach((playerScore: PlayerScore) => {
-            console.log(`Rank: ${playerScore.rank}`)
-            this.displayInfo( playerScore.player )
-        })
-        console.log("\n\n");
+    public displayWinner(player: Player): void {
+        this.inputOutput.write( player.getName() + " is the Winner!!\n" + player.toDisplayString() );
+    }
+
+    public displayBoard(): void {
+        this.inputOutput.write("\n\nBoard");
+        this.scoreBoardClass.getScoreBoard().forEach((playerScore: PlayerScore) => {
+            this.displayCustomMessage(`\nRank: ${playerScore.rank}`);
+            this.displayInfo( playerScore.player );
+        });
+        this.inputOutput.write("\n\n");
     }
 }

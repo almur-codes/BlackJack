@@ -13,24 +13,23 @@ export default class Card {
         this.setValue();
     }
 
-    public getValue(): number {
-        return Number(this.value);
-    }
-
     public getLetter(): string {
         return this.letter;
     }
-
+    
     public getSuite(): string {
         return this.suite;
     }
-
+    
     public isAce(): boolean {
         return this.letter.toUpperCase() === "A"
     }
-
+    
+    public getValue(): number {
+        return Number(this.value);
+    }
+    
     // add function to hold logic to determine is card is an ace
-
     public setValue(valueOfAce?: number | undefined): number {
         if( this.isAce() ){
             if( valueOfAce ){
@@ -54,7 +53,7 @@ export default class Card {
         throw new Error("Unexpected out of bounds");
     }
 
-    public toString(): string {
+    public toDisplayString(): string {
         return `${this.letter}|${this.suite} => ${this.value}`; 
     }
 }

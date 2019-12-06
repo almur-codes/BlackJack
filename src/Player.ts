@@ -1,25 +1,20 @@
 import Card from "./Card";
-import ScoreBoard from './ScoreBoard';
-
-interface Moves {
-    bust: boolean
-    stand: boolean
-};
 
 export default class Player {
 
     private name: string;
     private hand: Array<Card>;
     private score: number;
-    private move: Moves;
-    private updateScoreBoard: () => void;
+    private move: {
+        bust: boolean
+        stand: boolean
+    };
 
-    public constructor(name: string, callback?: () => void){
+    public constructor(name: string){
         this.name = name;
         this.hand = [];
         this.move = { bust: false, stand: false };
         this.score = 0;
-        this.updateScoreBoard = callback;
     }
 
     public hitMe(card: Card): void {
@@ -105,12 +100,9 @@ export default class Player {
             this.move.bust = true;
             this.score = 0;
         }
-
-        // ScoreBoard.generateScoreBoard();
-        this.updateScoreBoard;
     }
 
-    public toString(): string {
-        return `Name: ${this.name}; Hand:${this.hand.map((card: Card) => " " + card.toString())}; Score: ${this.score}`;
+    public toDisplayString(): string {
+        return `Name: ${this.name}; Hand:${this.hand.map((card: Card) => " " + card.toDisplayString())}; Score: ${this.score}`;
     }
 }

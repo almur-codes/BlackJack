@@ -1,7 +1,8 @@
 import Deck from "./Deck";
 import Player from './Player';
 import InputOutputHandler from './InputOutputHandler';
-import ScoreBoard from './ScoreBoard';
+// import ScoreBoard from './ScoreBoard';
+import { ScoreBoard } from './ScoreBoard';
 
 export default class BlackJack {
 
@@ -9,16 +10,19 @@ export default class BlackJack {
 
     private inputOutputHandler: InputOutputHandler;
 
+    private scoreBoard: ScoreBoard;
+
     public constructor(){
-        this.inputOutputHandler = new InputOutputHandler();
+        this.scoreBoard = new ScoreBoard();
+        this.inputOutputHandler = new InputOutputHandler( this.scoreBoard );
         this.setUpGame();
     }
 
     private async setUpGame(): Promise<void> {
-        console.log("New Game of Black Jack!!");
+        this.inputOutputHandler.displayCustomMessage("New Game of Black Jack!!");
         await this.addPlayersToGame();
 
-        console.log("Start Game!!");
+        this.inputOutputHandler.displayCustomMessage("Start Game!!");
         await this.startGame();
     }
     
@@ -26,7 +30,7 @@ export default class BlackJack {
         let numberOfPlayers: number = Number( await this.inputOutputHandler.getInitialNumberOfPlayers() )
 
         if(isNaN(numberOfPlayers) || numberOfPlayers < 2){
-            console.log("Invalid number of players, please try again.");
+            this.inputOutputHandler.displayCustomMessage("Invalid number of players, please try again.");
             return this.addPlayersToGame();
         }
         
@@ -34,36 +38,44 @@ export default class BlackJack {
         
         for (let index = 0; index < numberOfPlayers; index++) {
             let playerName: string = await this.inputOutputHandler.getPlayersName( index + 1 )
-            players.push( new Player( playerName, ScoreBoard.generateScoreBoard ) );
+            players.push( new Player( playerName ) );
         }
 
-        ScoreBoard.create( players );
+        this.scoreBoard.create( players );
+    }
+
+    private playerMove(player: Player, type: string): void {
+        if( type === "hit" ){
+            player.hitMe( this.deck.deal() );
+        } else if( type === "stand" ){
+            player.stand();
+        }
+        this.scoreBoard.generateScoreBoard();
     }
 
     private async startGame(): Promise<void> {
         this.deck = new Deck();
         
-        for (let i = 0; i < ScoreBoard.getPlayers().length; i++) {
-            const player: Player = ScoreBoard.getPlayers()[i];
-            player.hitMe(this.deck.deal());
-            player.hitMe(this.deck.deal());
+        for (let i = 0; i < this.scoreBoard.getPlayers().length; i++) {
+            const player: Player = this.scoreBoard.getPlayers()[i];
+            this.playerMove(player, "hit");
+            this.playerMove(player, "hit");
         }
         
-        for (let index = 0; index < ScoreBoard.getPlayers().length; index++) {
-            const player: Player = ScoreBoard.getPlayers()[index];
-            console.log("");
+        for (let index = 0; index < this.scoreBoard.getPlayers().length; index++) {
+            const player: Player = this.scoreBoard.getPlayers()[index];
             await this.playARound( player );
         }
         
-        console.log("\nEnd of the Game\n");
-        let winners: Array<Player> = ScoreBoard.getWinner();
+        this.inputOutputHandler.displayCustomMessage("\nEnd of the Game\n");
+        let winners: Array<Player> = this.scoreBoard.getWinner();
         if( winners.length > 1 ){
-            console.log("Tie! Nobody wins");
+            this.inputOutputHandler.displayCustomMessage("Tie! Nobody wins");
         } else {
-            InputOutputHandler.displayWinner( winners.pop() );
+            this.inputOutputHandler.displayWinner( winners.pop() );
         }
 
-        InputOutputHandler.displayBoard();
+        this.inputOutputHandler.displayBoard();
 
         let playAgain: string = await this.inputOutputHandler.getUsersPlayAgainResponse();
 
@@ -76,15 +88,15 @@ export default class BlackJack {
     }
 
     private async playARound(player: Player): Promise<void> {
-        InputOutputHandler.displayInfo( player );
+        this.inputOutputHandler.displayInfo( player );
 
         let input: string = await this.inputOutputHandler.getPlayersMove( player );
 
         if( input === "hit" ){
-            player.hitMe(this.deck.deal());
+            this.playerMove(player, input);
 
             if( player.isBust() ){
-                InputOutputHandler.displayAlert( player );
+                this.inputOutputHandler.displayAlert( player );
                 return;
             }
             
@@ -92,17 +104,17 @@ export default class BlackJack {
         }
 
         if( input === "stand" ){
-            player.stand();
+            this.playerMove(player, input);
             return;
         }
         
-        InputOutputHandler.displayWarning( player );
+        this.inputOutputHandler.displayWarning( player );
         return this.playARound( player );
     }
     
     private resetGame(): void {
         this.deck = null;
-        ScoreBoard.reset();
-        ScoreBoard.create( ScoreBoard.getPlayers() )
+        this.scoreBoard.reset();
+        this.scoreBoard.create( this.scoreBoard.getPlayers() )
     }
 }

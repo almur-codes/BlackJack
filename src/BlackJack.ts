@@ -1,7 +1,6 @@
 import Deck from "./Deck";
 import Player from './Player';
 import InputOutputHandler from './InputOutputHandler';
-// import ScoreBoard from './ScoreBoard';
 import { ScoreBoard } from './ScoreBoard';
 
 export default class BlackJack {
@@ -13,8 +12,7 @@ export default class BlackJack {
     private scoreBoard: ScoreBoard;
 
     public constructor(){
-        this.scoreBoard = new ScoreBoard();
-        this.inputOutputHandler = new InputOutputHandler( this.scoreBoard );
+        this.inputOutputHandler = new InputOutputHandler();
         this.setUpGame();
     }
 
@@ -41,16 +39,7 @@ export default class BlackJack {
             players.push( new Player( playerName ) );
         }
 
-        this.scoreBoard.create( players );
-    }
-
-    private playerMove(player: Player, type: string): void {
-        if( type === "hit" ){
-            player.hitMe( this.deck.deal() );
-        } else if( type === "stand" ){
-            player.stand();
-        }
-        this.scoreBoard.generateScoreBoard();
+        this.scoreBoard = new ScoreBoard( players );
     }
 
     private async startGame(): Promise<void> {
@@ -75,7 +64,7 @@ export default class BlackJack {
             this.inputOutputHandler.displayWinner( winners.pop() );
         }
 
-        this.inputOutputHandler.displayBoard();
+        this.inputOutputHandler.displayBoard( this.scoreBoard.getScoreBoard() );
 
         let playAgain: string = await this.inputOutputHandler.getUsersPlayAgainResponse();
 
@@ -85,6 +74,15 @@ export default class BlackJack {
         }
         this.inputOutputHandler.close();
         return;
+    }
+
+    private playerMove(player: Player, type: string): void {
+        if( type === "hit" ){
+            player.hitMe( this.deck.deal() );
+        } else if( type === "stand" ){
+            player.stand();
+        }
+        this.scoreBoard.generateScoreBoard();
     }
 
     private async playARound(player: Player): Promise<void> {
@@ -115,6 +113,6 @@ export default class BlackJack {
     private resetGame(): void {
         this.deck = null;
         this.scoreBoard.reset();
-        this.scoreBoard.create( this.scoreBoard.getPlayers() )
+        this.scoreBoard.create( this.scoreBoard.getPlayers() );
     }
 }

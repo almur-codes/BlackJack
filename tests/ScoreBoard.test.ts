@@ -1,17 +1,15 @@
-import { ScoreBoard } from '../src/ScoreBoard';
+import { ScoreBoard, PlayerScore } from '../src/ScoreBoard';
 import Player from '../src/Player';
 import Card from '../src/Card';
 
-let T1: Player = new Player("T1");;
-let T2: Player = new Player("T2");;
-let T3: Player = new Player("T3");;
-let T4: Player = new Player("T4");;
+let T1: Player = new Player("T1");
+let T2: Player = new Player("T2");
+let T3: Player = new Player("T3");
+let T4: Player = new Player("T4");
 
-let scoreBoard: ScoreBoard = new ScoreBoard();
+let scoreBoard: ScoreBoard;
 
 beforeEach(() => {
-    scoreBoard = new ScoreBoard();
-
     T1.hitMe(new Card("K", "Heart"));
     T1.hitMe(new Card("2", "Heart"));
     
@@ -32,37 +30,45 @@ afterEach(() => {
     });
 });
 
-test('should order players by score correctly in descending order', () => {
-    let players: Array<Player> = [ T1, T2, T3, T4 ];
-    
-    scoreBoard.create( players );
+test('should order players by score in descending order', () => {    
+    scoreBoard = new ScoreBoard([ T1, T2, T3, T4 ]);
 
-    expect( scoreBoard.getScoreBoard()[0].name ).toBe("T4");
-    expect( scoreBoard.getScoreBoard()[1].name ).toBe("T2");
-    expect( scoreBoard.getScoreBoard()[2].name ).toBe("T3");
-    expect( scoreBoard.getScoreBoard()[3].name ).toBe("T1");
+    let scores: Array<PlayerScore> = scoreBoard.getScoreBoard();
+
+    expect( scores[0].name ).toBe("T4");
+    expect( scores[1].name ).toBe("T2");
+    expect( scores[2].name ).toBe("T3");
+    expect( scores[3].name ).toBe("T1");
 });
 
-test('should order players by name if scores are equal in ascending order', () => {
+test('should order players by name (in ascending order) if scores are equal', () => {
     T1.hitMe(new Card("A", "Spade"));
-    
-    scoreBoard.create( [ T1, T2, T3, T4 ] );
 
-    expect( scoreBoard.getScoreBoard()[0].name ).toBe("T4");
-    expect( scoreBoard.getScoreBoard()[1].name ).toBe("T2");
-    expect( scoreBoard.getScoreBoard()[2].name ).toBe("T1");
-    expect( scoreBoard.getScoreBoard()[3].name ).toBe("T3");
+    scoreBoard = new ScoreBoard([ T1, T2, T3, T4 ]);
+
+    let scores: Array<PlayerScore> = scoreBoard.getScoreBoard();
+
+    expect( scores[0].name ).toBe("T4");
+    expect( scores[1].name ).toBe("T2");
+    expect( scores[2].name ).toBe("T1");
+    expect( scores[3].name ).toBe("T3");
 });
 
-test('should return an array of tied players', () => {
+test('getWinner() should return an array of tied players', () => {
+    scoreBoard = new ScoreBoard([ T1, T2, T3, T4 ]);
+    
+    expect( scoreBoard.getWinner().length ).toBe(1);
+    
     T2.hitMe(new Card("2", "Spade"));
     
-    scoreBoard.create( [ T1, T2, T3, T4 ] );
+    scoreBoard = new ScoreBoard([ T1, T2, T3, T4 ]);
 
-    expect( scoreBoard.getScoreBoard()[0].name ).toBe("T2");
-    expect( scoreBoard.getScoreBoard()[1].name ).toBe("T4");
-    expect( scoreBoard.getScoreBoard()[2].name ).toBe("T3");
-    expect( scoreBoard.getScoreBoard()[3].name ).toBe("T1");
+    let scores: Array<PlayerScore> = scoreBoard.getScoreBoard();
+
+    expect( scores[0].name ).toBe("T2");
+    expect( scores[1].name ).toBe("T4");
+    expect( scores[2].name ).toBe("T3");
+    expect( scores[3].name ).toBe("T1");
 
     expect( scoreBoard.getWinner().length ).toBe(2);
 });

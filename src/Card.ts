@@ -22,14 +22,13 @@ export default class Card {
     }
     
     public isAce(): boolean {
-        return this.letter.toUpperCase() === "A"
+        return this.letter.toUpperCase() === "A";
     }
     
     public getValue(): number {
         return Number(this.value);
     }
     
-    // add function to hold logic to determine is card is an ace
     public setValue(valueOfAce?: number | undefined): number {
         if( this.isAce() ){
             if( valueOfAce ){

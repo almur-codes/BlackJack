@@ -1,7 +1,15 @@
 import Deck from '../src/Deck';
 import Card from '../src/Card';
 
-let deck: Deck = new Deck();
+let deck: Deck;
+
+beforeEach(() => {
+    deck = new Deck();
+});
+
+afterEach(() => {
+    deck = null;
+});
 
 test('New deck should be instance of class Deck', () => {
     expect( deck ).toBeInstanceOf( Deck );

@@ -1,6 +1,6 @@
 import Player from './Player';
 import * as readline from 'readline';
-import { ScoreBoard, PlayerScore } from "./ScoreBoard";
+import { ScoreBoard, PlayerScore } from './ScoreBoard';
 
 export default class InputOutputHandler {
 
@@ -12,15 +12,12 @@ export default class InputOutputHandler {
         getPlayersMove: " will you HIT or STAND > ",
         getUsersPlayAgainResponse: "Would you like to play again > "
     };
-
-    private scoreBoardClass: ScoreBoard;
     
-    public constructor(scoreBoardClass: ScoreBoard) {
+    public constructor() {
         this.inputOutput = readline.createInterface({
             input: process.stdin, 
             output: process.stdout
         });
-        this.scoreBoardClass = scoreBoardClass;
     }
 
     private askQuestion (question: string): Promise<string> {
@@ -62,6 +59,7 @@ export default class InputOutputHandler {
     public displayWarning(player: Player): void {
         this.inputOutput.write("\n");
         this.inputOutput.write( player.getName() + " invalid move. Please try again" );
+        this.inputOutput.write("\n");
     }
 
     public displayAlert(player: Player): void {
@@ -74,9 +72,9 @@ export default class InputOutputHandler {
         this.inputOutput.write( player.getName() + " is the Winner!!\n" + player.toDisplayString() );
     }
 
-    public displayBoard(): void {
+    public displayBoard(scoreBoard: Array<PlayerScore>): void {
         this.inputOutput.write("\n\nBoard");
-        this.scoreBoardClass.getScoreBoard().forEach((playerScore: PlayerScore) => {
+        scoreBoard.forEach((playerScore: PlayerScore) => {
             this.displayCustomMessage(`\nRank: ${playerScore.rank}`);
             this.displayInfo( playerScore.player );
         });

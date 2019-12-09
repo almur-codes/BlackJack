@@ -70,15 +70,13 @@ export default class Player {
                 newHand.push( ace );
             });
         } else {
-            // if totalWithoutAces < 11 only one ace value can be chosen the rest have values of 1 by default
+            // if totalWithoutAces < 11 only one ace value can be 11 the rest have values of 1 by default
             let hasAnAceBeenSetAsEleven: boolean = false;
             for (let index = 0; index < acesInHand.length; index++) {
                 const ace: Card = acesInHand[index];
                 if( !hasAnAceBeenSetAsEleven ){
-                    // let value: number = await this.askQuestion("What is the value of Ace (11 or 1) > ")
-                    let value: number = 11;
-                    ace.setValue( value );
-                    hasAnAceBeenSetAsEleven = (value === 11);
+                    ace.setValue( 11 );
+                    hasAnAceBeenSetAsEleven = true;
                 } else {
                     ace.setValue( 1 );
                 }

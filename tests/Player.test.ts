@@ -1,23 +1,18 @@
 import Player from '../src/Player';
 import Card from '../src/Card';
 import Deck from '../src/Deck';
-import { ScoreBoard } from '../src/ScoreBoard';
 
 let player: Player;
 let deck: Deck;
-let scoreBoard: ScoreBoard;
 
 beforeEach(() => {
-    scoreBoard = new ScoreBoard();
     player = new Player("Test");
     deck = new Deck();
-    scoreBoard.create( [player] );
 });
 
 afterEach(() => {
     player = null;
     deck = null;
-    scoreBoard = null;
 })
 
 test('New Player is instance of class Player', () => {
@@ -31,9 +26,10 @@ test('Should increase players hand by one', () => {
     player.hitMe( deck.deal() );
     expect( player.getHand().length ).toBe(1);
     expect( player.getScore() ).toBeGreaterThan(0);
+    expect( player.getScore() ).toBeLessThan(12);
 });
 
-test('Should automatically set Ace to 1', () => {
+test('Should automatically set Ace to 1 if players score is greater than 10', () => {
     player.hitMe(new Card('A', 'Spade'));
     expect( player.getScore() ).toBe(11);
     player.hitMe(new Card('8', 'Heart'));
@@ -58,6 +54,7 @@ test('Should return player object to original state', () => {
     player.hitMe( deck.deal() );
     player.hitMe( deck.deal() );
     expect( player.getHand().length ).toBe(3);
+    expect( player.getScore() ).toBeGreaterThan(5); // lowest possible hand is 2 + 2 + 2 = 6
     player.reset();
     expect( player.getHand().length ).toBe(0);
     expect( player.getScore() ).toBe(0);

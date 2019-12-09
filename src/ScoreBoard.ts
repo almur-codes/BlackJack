@@ -31,7 +31,10 @@ export class ScoreBoard {
         return [ highestScoringPlayer ];
     }
 
-    public constructor(){}
+    public constructor(players: Array<Player>){
+        this.players = players;
+        this.generateScoreBoard();
+    }
 
     public create( players: Array<Player> ): void {
         this.players = players;

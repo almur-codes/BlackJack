@@ -48,24 +48,24 @@ export default class InputOutputHandler {
 
     public displayCustomMessage( message: string ): void {
         this.inputOutput.write( message );
-        this.inputOutput.write("\n");
+        this.lineBreak();
     }
 
     public displayInfo(player: Player): void {
         this.inputOutput.write( player.toDisplayString() );
-        this.inputOutput.write("\n");
+        this.lineBreak();
     }
 
     public displayWarning(player: Player): void {
-        this.inputOutput.write("\n");
+        this.lineBreak();
         this.inputOutput.write( player.getName() + " invalid move. Please try again" );
-        this.inputOutput.write("\n");
+        this.lineBreak();
     }
 
     public displayAlert(player: Player): void {
-        this.inputOutput.write("\n");
+        this.lineBreak();
         this.inputOutput.write( player.getName() + " is bust!!\n" + player.toDisplayString() );
-        this.inputOutput.write("\n");
+        this.lineBreak();
     }
 
     public displayWinner(player: Player): void {
@@ -73,11 +73,19 @@ export default class InputOutputHandler {
     }
 
     public displayBoard(scoreBoard: Array<PlayerScore>): void {
-        this.inputOutput.write("\n\nBoard");
+        this.lineBreak(2);
+        this.inputOutput.write("Board");
         scoreBoard.forEach((playerScore: PlayerScore) => {
-            this.displayCustomMessage(`\nRank: ${playerScore.rank}`);
+            this.lineBreak();
+            this.displayCustomMessage(`Rank: ${playerScore.rank}`);
             this.displayInfo( playerScore.player );
         });
-        this.inputOutput.write("\n\n");
+        this.lineBreak(2);
+    }
+
+    private lineBreak(numberOfBreaks: number = 1): void {
+        for (let index = 0; index < numberOfBreaks; index++) {
+            this.inputOutput.write("\n");
+        }
     }
 }

@@ -1,8 +1,9 @@
 import Card from './Card';
+import { observable, computed, action, autorun } from 'mobx';
 
 export default class Deck {
 
-    private cards: Array<Card>;
+    @observable private cards: Array<Card>;
 
     public constructor() {
         this.cards = [];
@@ -13,7 +14,7 @@ export default class Deck {
         });
     }
 
-    public getCards(): Array<Card> {
+    @computed public get getCards(): Array<Card> {
         return this.cards;
     }
 
@@ -22,6 +23,7 @@ export default class Deck {
      * Removes the chosen card from the deck
      * @returns Card
      */
+    @action
     public deal(): Card {    
         let cardIndex: number =  Math.floor((Math.random() * (this.cards.length - 1)));
     

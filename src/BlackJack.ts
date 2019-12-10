@@ -2,6 +2,7 @@ import Deck from "./Deck";
 import Player from './Player';
 import InputOutputHandler from './InputOutputHandler';
 import { ScoreBoard } from './ScoreBoard';
+import { autorun } from "mobx";
 
 export default class BlackJack {
 
@@ -44,27 +45,32 @@ export default class BlackJack {
 
     private async startGame(): Promise<void> {
         this.deck = new Deck();
+
+        autorun(() => {
+            console.log(this.deck.getCards.length)
+            this.inputOutputHandler.displayBoard(this.scoreBoard.getScoreBoard)
+        })
         
-        for (let i = 0; i < this.scoreBoard.getPlayers().length; i++) {
-            const player: Player = this.scoreBoard.getPlayers()[i];
+        for (let i = 0; i < this.scoreBoard.getPlayers.length; i++) {
+            const player: Player = this.scoreBoard.getPlayers[i];
             this.playerMove(player, "hit");
             this.playerMove(player, "hit");
         }
         
-        for (let index = 0; index < this.scoreBoard.getPlayers().length; index++) {
-            const player: Player = this.scoreBoard.getPlayers()[index];
+        for (let index = 0; index < this.scoreBoard.getPlayers.length; index++) {
+            const player: Player = this.scoreBoard.getPlayers[index];
             await this.playARound( player );
         }
         
         this.inputOutputHandler.displayCustomMessage("\nEnd of the Game\n");
-        let winners: Array<Player> = this.scoreBoard.getWinner();
+        let winners: Array<Player> = this.scoreBoard.getWinner;
         if( winners.length > 1 ){
             this.inputOutputHandler.displayCustomMessage("Tie! Nobody wins");
         } else {
             this.inputOutputHandler.displayWinner( winners.pop() );
         }
 
-        this.inputOutputHandler.displayBoard( this.scoreBoard.getScoreBoard() );
+        this.inputOutputHandler.displayBoard( this.scoreBoard.getScoreBoard );
 
         let playAgain: string = await this.inputOutputHandler.getUsersPlayAgainResponse();
 
@@ -93,7 +99,7 @@ export default class BlackJack {
         if( input === "hit" ){
             this.playerMove(player, input);
 
-            if( player.isBust() ){
+            if( player.isBust ){
                 this.inputOutputHandler.displayAlert( player );
                 return;
             }
@@ -113,6 +119,6 @@ export default class BlackJack {
     private resetGame(): void {
         this.deck = null;
         this.scoreBoard.reset();
-        this.scoreBoard.create( this.scoreBoard.getPlayers() );
+        this.scoreBoard.initialize( this.scoreBoard.getPlayers );
     }
 }

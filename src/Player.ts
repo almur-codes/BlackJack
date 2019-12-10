@@ -1,12 +1,13 @@
 import Card from "./Card";
+import { observable, action, computed } from "mobx";
 
 export default class Player {
 
-    private name: string;
-    private hand: Array<Card>;
-    private score: number;
-    private move: {
-        bust: boolean
+    @observable private name: string;
+    @observable private hand: Array<Card>;
+    @observable private score: number;
+    @observable private move: {
+        bust: boolean,
         stand: boolean
     };
 
@@ -17,53 +18,56 @@ export default class Player {
         this.score = 0;
     }
 
+    @action
     public hitMe(card: Card): void {
         this.hand.push(card);
         this.calculateScore();
     }
 
+    @action
     public reset(): void {
         this.hand = [];
         this.score = 0;
         this.move = { bust: false, stand: false };
     }
 
+    @action
     public stand(): void {
         this.move.stand = true;
     }
-
-    public isBust(): boolean {
+    
+    @computed public get isBust(): boolean {
         return this.move.bust;
     }
 
-    public isStanding(): boolean {
+    @computed public get isStanding(): boolean {
         return this.move.stand;
     }
 
-    public getName(): string {
+    @computed public get getName(): string {
         return this.name;
     }
 
-    public getScore(): number {
+    @computed public get getScore(): number {
         return this.score;
     }
 
-    public getHand(): Array<Card> {
+    @computed public get getHand(): Array<Card> {
         return this.hand;
     }
 
     private calculateScore(): void {
-        let handWithoutAces: Array<Card> = this.hand.filter((card: Card) => !card.isAce());
+        let handWithoutAces: Array<Card> = this.hand.filter((card: Card) => !card.isAce);
         let newHand: Array<Card> = handWithoutAces.slice();
         
         // calculate value of hand with out aces
         let totalWithoutAces: number = 0;
         handWithoutAces.forEach((card: Card) => {
-            totalWithoutAces += card.getValue();
+            totalWithoutAces += card.getValue;
         });
         
         // if totalWithoutAces > 10 all aces must have a value of 1
-        let acesInHand: Array<Card> = this.hand.filter((card: Card) => card.isAce());
+        let acesInHand: Array<Card> = this.hand.filter((card: Card) => card.isAce);
         if( totalWithoutAces > 10 ){
             acesInHand.forEach((ace: Card) => {
                 ace.setValue( 1 );
@@ -89,7 +93,7 @@ export default class Player {
         let total: number = 0;
         
         this.hand.forEach((card: Card) => {
-            total += card.getValue();
+            total += card.getValue;
         });
 
         this.score = Number(total);
@@ -100,7 +104,7 @@ export default class Player {
         }
     }
 
-    public toDisplayString(): string {
-        return `Name: ${this.name}; Hand:${this.hand.map((card: Card) => " " + card.toDisplayString())}; Score: ${this.score}`;
+    @computed public get toDisplayString(): string {
+        return `Name: ${this.name}; Hand:${this.hand.map((card: Card) => " " + card.toDisplayString)}; Score: ${this.score}`;
     }
 }

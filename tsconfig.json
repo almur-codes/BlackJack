@@ -5,8 +5,21 @@
         "module": "commonjs",
         "sourceMap": true
     },
-    "include": [
-        "*.ts",
-        "*.test.ts",
-    ],
+    // "include": [
+    //     "*.ts",
+    // ],
+    "files": [
+        "./runMe.ts",
+        "./src/BlackJack.ts",
+        "./src/Card.ts",
+        "./src/Deck.ts",
+        "./src/InputOutputHandler.ts",
+        "./src/Player.ts",
+        "./src/ScoreBoard.ts",
+
+        // "./tests/Card.test.ts",
+        // "./tests/Deck.test.ts",
+        // "./tests/Player.test.ts",
+        // "./tests/ScoreBoard.test.ts",
+    ]
 }

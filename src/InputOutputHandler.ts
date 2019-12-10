@@ -39,7 +39,7 @@ export default class InputOutputHandler {
     }
 
     public async getPlayersMove(player: Player): Promise<string> {
-        return (await this.askQuestion( `${player.getName()} ${this.questions['getPlayersMove']}` )).toLowerCase();
+        return (await this.askQuestion( `${player.getName} ${this.questions['getPlayersMove']}` )).toLowerCase();
     }
 
     public async getUsersPlayAgainResponse(): Promise<string> {
@@ -52,24 +52,24 @@ export default class InputOutputHandler {
     }
 
     public displayInfo(player: Player): void {
-        this.inputOutput.write( player.toDisplayString() );
+        this.inputOutput.write( player.toDisplayString );
         this.inputOutput.write("\n");
     }
 
     public displayWarning(player: Player): void {
         this.inputOutput.write("\n");
-        this.inputOutput.write( player.getName() + " invalid move. Please try again" );
+        this.inputOutput.write( player.getName + " invalid move. Please try again" );
         this.inputOutput.write("\n");
     }
 
     public displayAlert(player: Player): void {
         this.inputOutput.write("\n");
-        this.inputOutput.write( player.getName() + " is bust!!\n" + player.toDisplayString() );
+        this.inputOutput.write( player.getName + " is bust!!\n" + player.toDisplayString );
         this.inputOutput.write("\n");
     }
 
     public displayWinner(player: Player): void {
-        this.inputOutput.write( player.getName() + " is the Winner!!\n" + player.toDisplayString() );
+        this.inputOutput.write( player.getName + " is the Winner!!\n" + player.toDisplayString );
     }
 
     public displayBoard(scoreBoard: Array<PlayerScore>): void {

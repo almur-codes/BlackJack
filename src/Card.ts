@@ -1,11 +1,13 @@
+import { observable, computed, action } from "mobx";
+
 export default class Card {
     public static readonly CardTypes: Array<string> = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
     public static readonly CardSuites: Array<string> = ['Heart', 'Diamond', 'Spade', 'Club'];
 
-    private letter: string;
-    private suite: string;
-    private value: number;
+    @observable private letter: string;
+    @observable private suite: string;
+    @observable private value: number;
 
     public constructor( letter: string, suite: string ){
         this.letter = letter;
@@ -13,24 +15,25 @@ export default class Card {
         this.setValue();
     }
 
-    public getLetter(): string {
+    @computed public get getLetter(): string {
         return this.letter;
     }
     
-    public getSuite(): string {
+    @computed public get getSuite(): string {
         return this.suite;
     }
     
-    public isAce(): boolean {
+    @computed public get isAce(): boolean {
         return this.letter.toUpperCase() === "A";
     }
     
-    public getValue(): number {
+    @computed public get getValue(): number {
         return Number(this.value);
     }
     
+    @action
     public setValue(valueOfAce?: number | undefined): number {
-        if( this.isAce() ){
+        if( this.isAce ){
             if( valueOfAce ){
                 this.value = Number(valueOfAce);
                 return;
@@ -52,7 +55,7 @@ export default class Card {
         throw new Error("Unexpected out of bounds");
     }
 
-    public toDisplayString(): string {
+    @computed public get toDisplayString(): string {
         return `${this.letter}|${this.suite} => ${this.value}`; 
     }
 }

@@ -1,0 +1,27 @@
+.player {
+    border: solid black 1px;
+    margin: 10px;
+    padding: 5px;
+}
+
+.player-hand {
+    display: inline-block;
+}
+
+.player-actions button {
+    margin: 10px;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px black solid;
+    border-radius: 4px;
+    transition: 1s ease-in-out;
+}
+
+.player-actions button:hover,
+.player-actions button:active {
+    background-color: #000;
+    cursor: pointer;
+    transition: 1s ease-in-out;
+    box-shadow: 0 1px 2px #000;
+    color: white;
+}

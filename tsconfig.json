@@ -2,24 +2,29 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "target": "es5",
-        "module": "commonjs",
-        "sourceMap": true
+        "module": "esnext",
+        "sourceMap": true,
+        "lib": [
+        "dom",
+        "dom.iterable",
+        "esnext"
+        ],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react"
     },
-    // "include": [
-    //     "*.ts",
-    // ],
+    "include": [
+        "src/components/"
+    ],
     "files": [
-        "./runMe.ts",
-        "./src/BlackJack.ts",
-        "./src/Card.ts",
-        "./src/Deck.ts",
-        "./src/InputOutputHandler.ts",
-        "./src/Player.ts",
-        "./src/ScoreBoard.ts",
-
-        // "./tests/Card.test.ts",
-        // "./tests/Deck.test.ts",
-        // "./tests/Player.test.ts",
-        // "./tests/ScoreBoard.test.ts",
+        "src/index.tsx"
     ]
 }

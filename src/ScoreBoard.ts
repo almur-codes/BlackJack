@@ -10,8 +10,6 @@ export interface PlayerScore {
 
 export class ScoreBoard {
 
-    // @observable private scoreBoard: Array<PlayerScore>;
-
     @observable private players: Array<Player> = [];
 
     private checkForTies(highestScoringPlayer: Player): Array<Player> {
@@ -39,7 +37,6 @@ export class ScoreBoard {
     @action 
     public initialize( players: Array<Player> ): void {
         this.players = players;
-        // this.generateScoreBoard();
     }
 
     private sortingFuntion(a: Player, b: Player): number {
@@ -69,7 +66,6 @@ export class ScoreBoard {
     public get getScoreBoard(): Array<PlayerScore> {
         if(this.players.length < 1) {
             return [];
-            // throw new Error("No players in game");
         };
 
         let sortedBustPlayers: Array<Player> = this.players.filter((player: Player) => player.isBust).sort(this.sortingFuntion)
@@ -86,14 +82,16 @@ export class ScoreBoard {
                 rank: (index + 1)
             };
         });
-        // return this.scoreBoard;
     }
 
     @computed
     public get getWinner(): Array<Player> {
-        let highestScoringPlayer: Player = this.getScoreBoard.find((player: PlayerScore) => player.rank === 1).player;
-        let winners: Array<Player> = this.checkForTies( highestScoringPlayer );
-        return winners;
+        let unBustPlayers: Array<PlayerScore> = this.getScoreBoard.filter((playerScore: PlayerScore) => playerScore.score < 22);
+        if( unBustPlayers.length < 1 ){
+            return [];
+        }
+        let highestScoringPlayer: Player = unBustPlayers[0].player;
+        return this.checkForTies( highestScoringPlayer );
     }
 
     @action

@@ -1,2 +1,2 @@
 import BlackJack from './src/BlackJack';
-new BlackJack()
+new BlackJack();

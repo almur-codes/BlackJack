@@ -5,7 +5,6 @@ export default class Player {
 
     @observable private name: string;
     @observable private hand: Array<Card>;
-    @observable private score: number;
     @observable private move: {
         bust: boolean,
         stand: boolean
@@ -15,19 +14,16 @@ export default class Player {
         this.name = name;
         this.hand = [];
         this.move = { bust: false, stand: false };
-        this.score = 0;
     }
 
     @action
     public hitMe(card: Card): void {
         this.hand.push(card);
-        this.calculateScore();
     }
 
     @action
     public reset(): void {
         this.hand = [];
-        this.score = 0;
         this.move = { bust: false, stand: false };
     }
 
@@ -37,11 +33,7 @@ export default class Player {
     }
     
     @computed public get isBust(): boolean {
-        return this.move.bust;
-    }
-
-    @computed public get isStanding(): boolean {
-        return this.move.stand;
+        return this.getScore > 21;
     }
 
     @computed public get getName(): string {
@@ -49,16 +41,18 @@ export default class Player {
     }
 
     @computed public get getScore(): number {
-        return this.score;
+        let total: number = 0;
+        
+        this.getHandValuation.forEach((card: Card) => {
+            total += card.getValue;
+        });
+
+        return Number(total);
     }
 
-    @computed public get getHand(): Array<Card> {
-        return this.hand;
-    }
-
-    private calculateScore(): void {
+    @computed public get getHandValuation(): Array<Card> {
         let handWithoutAces: Array<Card> = this.hand.filter((card: Card) => !card.isAce);
-        let newHand: Array<Card> = handWithoutAces.slice();
+        let valuatedHand: Array<Card> = handWithoutAces.slice();
         
         // calculate value of hand with out aces
         let totalWithoutAces: number = 0;
@@ -70,41 +64,28 @@ export default class Player {
         let acesInHand: Array<Card> = this.hand.filter((card: Card) => card.isAce);
         if( totalWithoutAces > 10 ){
             acesInHand.forEach((ace: Card) => {
-                ace.setValue( 1 );
-                newHand.push( ace );
+                valuatedHand.push( new Card(ace.getLetter, ace.getSuite, 1) );
             });
         } else {
             // if totalWithoutAces < 11 only one ace value can be 11 the rest have values of 1 by default
             let hasAnAceBeenSetAsEleven: boolean = false;
             for (let index = 0; index < acesInHand.length; index++) {
                 const ace: Card = acesInHand[index];
+                let value: number;
                 if( !hasAnAceBeenSetAsEleven ){
-                    ace.setValue( 11 );
+                    value = 11;
                     hasAnAceBeenSetAsEleven = true;
                 } else {
-                    ace.setValue( 1 );
+                    value = 1;
                 }
-                newHand.push( ace );
+                valuatedHand.push( new Card(ace.getLetter, ace.getSuite, value) );
             }
         }
 
-        this.hand = newHand;
-
-        let total: number = 0;
-        
-        this.hand.forEach((card: Card) => {
-            total += card.getValue;
-        });
-
-        this.score = Number(total);
-
-        if( this.score > 21 ){
-            this.move.bust = true;
-            this.score = 0;
-        }
+        return valuatedHand;
     }
 
     @computed public get toDisplayString(): string {
-        return `Name: ${this.name}; Hand:${this.hand.map((card: Card) => " " + card.toDisplayString)}; Score: ${this.score}`;
+        return `Name: ${this.name}; Hand:${this.hand.map((card: Card) => " " + card.toDisplayString)}; Score: ${this.getScore}`;
     }
 }

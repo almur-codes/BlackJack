@@ -88,7 +88,7 @@ export default class BlackJack {
         } else if( type === "stand" ){
             player.stand();
         }
-        this.scoreBoard.generateScoreBoard();
+        // this.scoreBoard.generateScoreBoard();
     }
 
     private async playARound(player: Player): Promise<void> {

@@ -32,7 +32,7 @@ export default class Card {
     }
     
     @action
-    public setValue(valueOfAce?: number | undefined): number {
+    public setValue(valueOfAce?: number | undefined): void {
         if( this.isAce ){
             if( valueOfAce ){
                 this.value = Number(valueOfAce);

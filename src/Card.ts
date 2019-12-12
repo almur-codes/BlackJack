@@ -9,10 +9,10 @@ export default class Card {
     @observable private suite: string;
     @observable private value: number;
 
-    public constructor( letter: string, suite: string ){
+    public constructor( letter: string, suite: string, value?: number ){
         this.letter = letter;
         this.suite = suite;
-        this.setValue();
+        this.setValue(value);
     }
 
     @computed public get getLetter(): string {

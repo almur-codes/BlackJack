@@ -47,8 +47,7 @@ export default class BlackJack {
         this.deck = new Deck();
 
         autorun(() => {
-            console.log(this.deck.getCards.length)
-            this.inputOutputHandler.displayBoard(this.scoreBoard.getScoreBoard)
+            // this.inputOutputHandler.displayBoard(this.scoreBoard.getScoreBoard)
         })
         
         for (let i = 0; i < this.scoreBoard.getPlayers.length; i++) {
@@ -65,9 +64,11 @@ export default class BlackJack {
         this.inputOutputHandler.displayCustomMessage("\nEnd of the Game\n");
         let winners: Array<Player> = this.scoreBoard.getWinner;
         if( winners.length > 1 ){
-            this.inputOutputHandler.displayCustomMessage("Tie! Nobody wins");
-        } else {
+            this.inputOutputHandler.displayCustomMessage("Tie! No one wins");
+        } else if( winners.length === 1) {
             this.inputOutputHandler.displayWinner( winners.pop() );
+        } else {
+            this.inputOutputHandler.displayCustomMessage("All Players are Bust. No one wins!!");
         }
 
         this.inputOutputHandler.displayBoard( this.scoreBoard.getScoreBoard );
@@ -88,7 +89,6 @@ export default class BlackJack {
         } else if( type === "stand" ){
             player.stand();
         }
-        this.scoreBoard.generateScoreBoard();
     }
 
     private async playARound(player: Player): Promise<void> {

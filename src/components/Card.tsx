@@ -9,7 +9,7 @@ interface CardProps {
 }
 
 @observer
-export default class Card extends React.Component<CardProps> {
+export default class Card extends React.Component<CardProps, any> {
 
     private getClassName(): string {
         let className: string = "card";
@@ -18,7 +18,7 @@ export default class Card extends React.Component<CardProps> {
         return className;
     }
     
-    public render() {
+    public render(): JSX.Element {
         return (
             <div className={this.getClassName()}></div>
         );

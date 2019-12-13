@@ -12,13 +12,13 @@ export default class CardStore {
     @observable private value: number;
     @observable private className: string;
 
-    public constructor( letter: string, suite: string ){
+    public constructor( letter: string, suite: string, value?: number ){
         this.letter = letter;
         this.suite = suite;
         this.value = 0;
         this.className = "";
         this.setClassName();
-        this.setValue();
+        this.setValue(value);
     }
 
     @computed public get getClassName(): string {

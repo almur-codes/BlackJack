@@ -10,12 +10,10 @@ export interface PlayerScore {
 
 export class ScoreBoardStore {
 
-    @observable private scoreBoard: Array<PlayerScore> = [];
-
     @observable private players: Array<Player> = [];
 
     private checkForTies(highestScoringPlayer: Player): Array<Player> {
-        let tiedPlayers: Array<PlayerScore> = this.scoreBoard.slice().filter((playerScore: PlayerScore) => {
+        let tiedPlayers: Array<PlayerScore> = this.getScoreBoard.slice().filter((playerScore: PlayerScore) => {
             return playerScore.player.getScore === highestScoringPlayer.getScore;
         });
 
@@ -39,35 +37,44 @@ export class ScoreBoardStore {
     @action 
     public initialize( players: Array<Player> ): void {
         this.players = players;
-        this.generateScoreBoard();
     }
 
-    @action 
-    public generateScoreBoard(): void {
-        if(this.players.length < 1) {
-            this.scoreBoard = [];
-            // throw new Error("No players in game");
-        };
-
-        let sortedPlayers: Array<Player> = this.players.slice().sort((a: Player, b: Player) => {
-            // filter by score (desc)
-            if( a.getScore < b.getScore ){
+    private sortingFuntion(a: Player, b: Player): number {
+        // filter by score (desc)
+        if( a.getScore < b.getScore ){
+            return 1;
+        } else if( a.getScore > b.getScore ){
+            return -1;
+        } else {
+            // if scores are the same filter by name (asc)
+            if( a.getName.toUpperCase() > b.getName.toUpperCase() ){
                 return 1;
-            } else if( a.getScore > b.getScore ){
+            } else if( a.getName.toUpperCase() < b.getName.toUpperCase() ){
                 return -1;
             } else {
-                // if scores are the same filter by name (asc)
-                if( a.getName.toUpperCase() > b.getName.toUpperCase() ){
-                    return 1;
-                } else if( a.getName.toUpperCase() < b.getName.toUpperCase() ){
-                    return -1;
-                } else {
-                    return 0;
-                }
+                return 0;
             }
-        });
+        }
+    }
 
-        this.scoreBoard = sortedPlayers.map((player: Player, index: number) => {
+    @computed
+    public get getPlayers(): Array<Player> {
+        return this.players;
+    }
+
+    @computed
+    public get getScoreBoard(): Array<PlayerScore> {
+        if(this.players.length < 1) {
+            return [];
+        };
+
+        let sortedBustPlayers: Array<Player> = this.players.filter((player: Player) => player.isBust).sort(this.sortingFuntion)
+
+        let sortedUnBustPlayers: Array<Player> = this.players.filter((player: Player) => !player.isBust).sort(this.sortingFuntion);
+
+        let sortedPlayers: Array<Player> = [...sortedUnBustPlayers, ...sortedBustPlayers];
+
+        return sortedPlayers.map((player: Player, index: number) => {
             return {
                 player: player,
                 name: player.getName,
@@ -78,30 +85,17 @@ export class ScoreBoardStore {
     }
 
     @computed
-    public get getPlayers(): Array<Player> {
-        return this.players;
-    }
-
-    @computed
-    public get getScoreBoard(): Array<PlayerScore> {
-        return this.scoreBoard;
-    }
-
-    @computed
     public get getWinner(): Array<Player> {
-        let highestScoringPlayerScore: PlayerScore | undefined = this.scoreBoard.find((player: PlayerScore) => player.rank === 1);
-        if( typeof highestScoringPlayerScore === "undefined" ){
-            throw new Error("Undefined variable");
-            
+        let unBustPlayers: Array<PlayerScore> = this.getScoreBoard.filter((playerScore: PlayerScore) => playerScore.score < 22);
+        if( unBustPlayers.length < 1 ){
+            return [];
         }
-        let highestScoringPlayer: Player = highestScoringPlayerScore.player
-        let winners: Array<Player> = this.checkForTies( highestScoringPlayer );
-        return winners;
+        let highestScoringPlayer: Player = unBustPlayers[0].player;
+        return this.checkForTies( highestScoringPlayer );
     }
 
     @action
     public reset(): void {
-        this.scoreBoard = [];
         this.players.forEach((player: Player) => {
             player.reset();
         });

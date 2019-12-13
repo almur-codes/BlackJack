@@ -4,28 +4,32 @@ import CardStore from './Card.store';
 import Card from './Card';
 import './Player.css';
 import { observer } from 'mobx-react';
+import Deck from './Deck.store';
 
 interface PlayerProps{
+    deck: Deck,
     player: PlayerStore,
     isActive: boolean
 }
 
 @observer
-export default class Player extends React.Component<PlayerProps> {
-    private renderActions(): any {
+export default class Player extends React.Component<PlayerProps, any> {
+    
+    private renderActions(): JSX.Element {
         if(this.props.isActive){
             return (
                 <div className="player-actions">
-                    <button>Hit Me!!</button>
-                    <button>Stand</button>
+                    <button onClick={() => this.props.player.hitMe(this.props.deck.deal())}>Hit Me!!</button>
+                    <button onClick={() => this.props.player.stand()}>Stand</button>
                 </div>
             );
         }
+        return <div></div>;
     }
 
-    private renderScore(): any {
+    private renderScore(): JSX.Element {
         let score: number | string = "**";
-        if( this.props.isActive ){
+        if( this.props.isActive || this.props.player.isBust ){
             score = this.props.player.getScore;
         }
         return (
@@ -33,7 +37,7 @@ export default class Player extends React.Component<PlayerProps> {
         );
     }
 
-    public render(): any {
+    public render(): JSX.Element {
         return (
             <div className="player">
                 <div className="player-header">
@@ -42,7 +46,7 @@ export default class Player extends React.Component<PlayerProps> {
                 </div>
                 <div className="player-hand">
                     {
-                        this.props.player.getHand.map((card: CardStore) => {
+                        this.props.player.getHandValuation.map((card: CardStore) => {
                             return <Card isHidden={!this.props.isActive} card={card} />
                         })
                     }

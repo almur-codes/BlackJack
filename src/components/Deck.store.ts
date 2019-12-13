@@ -1,5 +1,5 @@
-import Card from './Card';
-import { observable, computed, action, autorun } from 'mobx';
+import Card from './Card.store';
+import { observable, computed, action } from 'mobx';
 
 export default class Deck {
 
@@ -26,7 +26,7 @@ export default class Deck {
     @action
     public deal(): Card {    
         let cardIndex: number =  Math.floor((Math.random() * (this.cards.length - 1)));
-    
-        return this.cards.splice(cardIndex, 1).pop();
+
+        return this.cards.splice(cardIndex, 1)[0];
     }
 }

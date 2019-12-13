@@ -3,7 +3,7 @@ import Table from './Table';
 import { ScoreBoardStore } from './ScoreBoard.store';
 import { observer } from 'mobx-react';
 import PlayerStore from './Player.store';
-// import Deck from './Deck';
+import PlayerNameForm from './PlayerNameForm';
 
 interface BlackJackState {
     scoreBoard: ScoreBoardStore,
@@ -12,19 +12,20 @@ interface BlackJackState {
 
 @observer
 export default class BlackJack extends React.Component<any, BlackJackState> {
-
-    state = {
-        scoreBoard: new ScoreBoardStore([]),
-        startGame: false
+    
+    constructor(props: any){
+        super(props);
+        this.state = {
+            scoreBoard: new ScoreBoardStore([]),
+            startGame: false
+        }
     }
 
-    private initializeGame(): void {
-        let players: Array<PlayerStore> = [
-            new PlayerStore("Alex"),
-            new PlayerStore("Blex"),
-            new PlayerStore("Clex"),
-            new PlayerStore("Dlex")
-        ];
+
+    private initializeGame = (playerNames: Array<string>): void => {
+        let players: Array<PlayerStore> = playerNames.map((name: string) => {
+            return new PlayerStore(name);
+        });
         
         this.setState({
             scoreBoard: new ScoreBoardStore( players ),
@@ -32,7 +33,7 @@ export default class BlackJack extends React.Component<any, BlackJackState> {
         });
     }
 
-    private reset(): void {
+    private reset = (): void => {
         this.setState({startGame: false});
     }
 
@@ -41,7 +42,7 @@ export default class BlackJack extends React.Component<any, BlackJackState> {
             return (
                 <div>
                     <h1>Black Jack</h1>
-                    <button onClick={() => this.reset()}>Reset Game</button>
+                    <button onClick={this.reset}>Reset Game</button>
                     <Table scoreBoard={this.state.scoreBoard}/>
                 </div>
             );    
@@ -49,7 +50,7 @@ export default class BlackJack extends React.Component<any, BlackJackState> {
         return (
             <div>
                 <h1>Black Jack</h1>
-                <button onClick={() => this.initializeGame()}>Start new game</button>
+                <PlayerNameForm handleSubmit={this.initializeGame}/>
             </div>
         );
     }

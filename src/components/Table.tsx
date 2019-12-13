@@ -60,8 +60,8 @@ export default class Table extends React.Component<TableProps, TableState> {
         }
     }
 
-    private renderScore(playerScore: PlayerScore): JSX.Element {
-        return <div className="score-board-player">
+    private renderScore(playerScore: PlayerScore, index: number): JSX.Element {
+        return <div key={index} className="score-board-player">
             <h4>Rank: {playerScore.rank + ((playerScore.score > 21) ? ` (Bust!!)` : ``)}</h4>
             <h4>Name: {playerScore.player.getName}</h4>
             <h4>Score: {playerScore.score}</h4>
@@ -75,8 +75,8 @@ export default class Table extends React.Component<TableProps, TableState> {
                     <h3>Game Over</h3>
                     {this.renderEndOfGameMessage()}
                     {
-                        this.props.scoreBoard.getScoreBoard.map((playerScore: PlayerScore) => {
-                            return this.renderScore(playerScore);
+                        this.props.scoreBoard.getScoreBoard.map((playerScore: PlayerScore, index: number) => {
+                            return this.renderScore(playerScore, index);
                         })
                     }
                 </div>
@@ -88,7 +88,7 @@ export default class Table extends React.Component<TableProps, TableState> {
                     <div className="player-wrapper">
                         {
                             this.props.scoreBoard.getPlayers.map((player: PlayerStore, index: number) => {
-                                return <Player isActive={(index === this.getActivePlayerIndex())} deck={this.state.deck} player={player} />
+                                return <Player key={index} isActive={(index === this.getActivePlayerIndex())} deck={this.state.deck} player={player} />
                             })
                         
                         }
@@ -96,8 +96,8 @@ export default class Table extends React.Component<TableProps, TableState> {
                 </div>
                 <div className="table-score-board">
                     {
-                        this.props.scoreBoard.getScoreBoard.map((playerScore: PlayerScore) => {
-                            return this.renderScore(playerScore);
+                        this.props.scoreBoard.getScoreBoard.map((playerScore: PlayerScore, index: number) => {
+                            return this.renderScore(playerScore, index);
                         })
                     }
                 </div>

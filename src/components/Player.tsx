@@ -46,8 +46,8 @@ export default class Player extends React.Component<PlayerProps, any> {
                 </div>
                 <div className="player-hand">
                     {
-                        this.props.player.getHandValuation.map((card: CardStore) => {
-                            return <Card isHidden={!this.props.isActive} card={card} />
+                        this.props.player.getHandValuation.map((card: CardStore, index: number) => {
+                            return <Card key={index} isHidden={!this.props.isActive} card={card} />
                         })
                     }
                 </div>

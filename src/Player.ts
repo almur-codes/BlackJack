@@ -1,5 +1,6 @@
 import Card from "./Card";
 import { observable, action, computed } from "mobx";
+import Deck from './Deck';
 
 export default class Player {
 
@@ -9,15 +10,20 @@ export default class Player {
         bust: boolean,
         stand: boolean
     };
+    private dealCardCallback: Deck;
 
-    public constructor(name: string){
+    public constructor(name: string, dealCardCallback?: Deck) {
         this.name = name;
         this.hand = [];
         this.move = { bust: false, stand: false };
+        this.dealCardCallback = dealCardCallback;
     }
 
     @action
-    public hitMe(card: Card): void {
+    public hitMe(card?: Card): void {
+        if( typeof this.dealCardCallback !== undefined){
+            card = this.dealCardCallback.deal();
+        }
         this.hand.push(card);
     }
 

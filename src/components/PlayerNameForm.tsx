@@ -1,13 +1,6 @@
 import React from 'react';
 import './PlayerNameForm.css';
-
-interface PlayerNameFormState {
-    playerNames: Array<string>
-}
-
-interface PlayerNameFormProps {
-    handleSubmit: (playerNames: Array<string>) => void
-}
+import { PlayerNameFormProps, PlayerNameFormState } from '../interfaces';
 
 export default class PlayerNameForm extends React.Component<PlayerNameFormProps, PlayerNameFormState> {
     constructor(props: any){

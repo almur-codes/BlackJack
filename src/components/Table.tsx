@@ -5,16 +5,7 @@ import Player from './Player';
 import { ScoreBoardStore, PlayerScore } from './ScoreBoard.store';
 import Deck from './Deck.store';
 import "./Table.css";
-
-interface TableProps {
-    scoreBoard: ScoreBoardStore
-}
-
-interface TableState {
-    deck: Deck,
-    activePlayerIndex: number,
-    gameIsOver: boolean
-}
+import { TableProps, TableState } from '../interfaces';
 
 @observer
 export default class Table extends React.Component<TableProps, TableState> {
@@ -25,32 +16,33 @@ export default class Table extends React.Component<TableProps, TableState> {
         this.state = {
             deck: new Deck(),
             activePlayerIndex: 0,
-            gameIsOver: false
+            gameIsOver: false,
+            scoreBoard: new ScoreBoardStore(this.props.players)
         }
 
-        this.props.scoreBoard.getPlayers.forEach((player: PlayerStore) => {
+        this.state.scoreBoard.getPlayers.forEach((player: PlayerStore) => {
             player.hitMe(this.state.deck.deal());
             player.hitMe(this.state.deck.deal());
         });
     }
     
     private getActivePlayerIndex(): number {
-        if( this.props.scoreBoard.getPlayers[this.state.activePlayerIndex].isStanding || this.props.scoreBoard.getPlayers[this.state.activePlayerIndex].isBust ){
+        if( this.state.scoreBoard.getPlayers[this.state.activePlayerIndex].isStanding || this.state.scoreBoard.getPlayers[this.state.activePlayerIndex].isBust ){
             let newActivePlayerIndex: number = this.state.activePlayerIndex + 1;
-            if(newActivePlayerIndex >= this.props.scoreBoard.getPlayers.length) {
+            if(newActivePlayerIndex >= this.state.scoreBoard.getPlayers.length) {
                 this.setState({gameIsOver: true, activePlayerIndex: 0});
                 return 0;
             }
             this.setState({
                 activePlayerIndex: newActivePlayerIndex
-            })
+            });
             return newActivePlayerIndex;
         }
         return this.state.activePlayerIndex;
     }
 
     private renderEndOfGameMessage(): JSX.Element {
-        let winners: Array<PlayerStore> = this.props.scoreBoard.getWinner;
+        let winners: Array<PlayerStore> = this.state.scoreBoard.getWinner;
         if( winners.length > 1 ){
             return <h4>Tie! No Winner!!</h4>;
         } else if( winners.length === 1) {
@@ -75,7 +67,7 @@ export default class Table extends React.Component<TableProps, TableState> {
                     <h3>Game Over</h3>
                     {this.renderEndOfGameMessage()}
                     {
-                        this.props.scoreBoard.getScoreBoard.map((playerScore: PlayerScore, index: number) => {
+                        this.state.scoreBoard.getScoreBoard.map((playerScore: PlayerScore, index: number) => {
                             return this.renderScore(playerScore, index);
                         })
                     }
@@ -87,7 +79,7 @@ export default class Table extends React.Component<TableProps, TableState> {
                 <div className="table">
                     <div className="player-wrapper">
                         {
-                            this.props.scoreBoard.getPlayers.map((player: PlayerStore, index: number) => {
+                            this.state.scoreBoard.getPlayers.map((player: PlayerStore, index: number) => {
                                 return <Player key={index} isActive={(index === this.getActivePlayerIndex())} deck={this.state.deck} player={player} />
                             })
                         
@@ -96,7 +88,7 @@ export default class Table extends React.Component<TableProps, TableState> {
                 </div>
                 <div className="table-score-board">
                     {
-                        this.props.scoreBoard.getScoreBoard.map((playerScore: PlayerScore, index: number) => {
+                        this.state.scoreBoard.getScoreBoard.map((playerScore: PlayerScore, index: number) => {
                             return this.renderScore(playerScore, index);
                         })
                     }

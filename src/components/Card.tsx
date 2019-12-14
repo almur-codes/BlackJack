@@ -1,15 +1,10 @@
 import React from 'react';
 import './Card.css';
-import CardStore from './Card.store';
 import { observer } from 'mobx-react';
-
-interface CardProps {
-    card: CardStore,
-    isHidden: boolean // needs to be truthy or falsy
-}
+import { CardProps } from '../interfaces';
 
 @observer
-export default class Card extends React.Component<CardProps, any> {
+export default class Card extends React.Component<CardProps> {
 
     private getClassName(): string {
         let className: string = "card";

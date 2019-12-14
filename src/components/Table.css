@@ -13,7 +13,6 @@
 .score-board-player {
     border-bottom: dashed 1px black;
 }
-
 .player-wrapper {
     display: grid;
     grid-template-columns: auto auto;

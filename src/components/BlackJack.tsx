@@ -1,14 +1,9 @@
 import React from 'react';
 import Table from './Table';
-import { ScoreBoardStore } from './ScoreBoard.store';
 import { observer } from 'mobx-react';
 import PlayerStore from './Player.store';
 import PlayerNameForm from './PlayerNameForm';
-
-interface BlackJackState {
-    scoreBoard: ScoreBoardStore,
-    startGame: boolean
-}
+import { BlackJackState } from '../interfaces';
 
 @observer
 export default class BlackJack extends React.Component<any, BlackJackState> {
@@ -16,11 +11,10 @@ export default class BlackJack extends React.Component<any, BlackJackState> {
     constructor(props: any){
         super(props);
         this.state = {
-            scoreBoard: new ScoreBoardStore([]),
-            startGame: false
+            startGame: false,
+            players: []
         }
     }
-
 
     private initializeGame = (playerNames: Array<string>): void => {
         let players: Array<PlayerStore> = playerNames.map((name: string) => {
@@ -28,8 +22,8 @@ export default class BlackJack extends React.Component<any, BlackJackState> {
         });
         
         this.setState({
-            scoreBoard: new ScoreBoardStore( players ),
-            startGame: true
+            startGame: true,
+            players: players
         });
     }
 
@@ -43,9 +37,9 @@ export default class BlackJack extends React.Component<any, BlackJackState> {
                 <div>
                     <h1>Black Jack</h1>
                     <button onClick={this.reset}>Reset Game</button>
-                    <Table scoreBoard={this.state.scoreBoard}/>
+                    <Table players={this.state.players}/>
                 </div>
-            );    
+            );
         }
         return (
             <div>

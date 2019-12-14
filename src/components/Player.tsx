@@ -1,19 +1,12 @@
 import React from 'react';
-import PlayerStore from './Player.store';
 import CardStore from './Card.store';
 import Card from './Card';
 import './Player.css';
 import { observer } from 'mobx-react';
-import Deck from './Deck.store';
-
-interface PlayerProps{
-    deck: Deck,
-    player: PlayerStore,
-    isActive: boolean
-}
+import { PlayerProps } from '../interfaces';
 
 @observer
-export default class Player extends React.Component<PlayerProps, any> {
+export default class Player extends React.Component<PlayerProps> {
     
     private renderActions(): JSX.Element {
         if(this.props.isActive){

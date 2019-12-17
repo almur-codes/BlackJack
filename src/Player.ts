@@ -10,7 +10,7 @@ export default class Player {
         bust: boolean,
         stand: boolean
     };
-    @action private dealCardCallback: () => Card;
+    private dealCardCallback: () => Card;
 
     public constructor(name: string, dealCardCallback?: () => Card) {
         this.name = name;

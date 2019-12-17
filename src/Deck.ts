@@ -24,7 +24,7 @@ export default class Deck {
      * @returns Card
      */
     @action
-    public deal(): Card {    
+    public deal = (): Card => {    
         let cardIndex: number =  Math.floor((Math.random() * (this.cards.length - 1)));
     
         return this.cards.splice(cardIndex, 1).pop();

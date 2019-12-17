@@ -28,7 +28,7 @@ export default class Player {
     }
 
     @action
-    public stand(): void {
+    public stand = (): void => {
         this.move.stand = true;
     }
 

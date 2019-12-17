@@ -13,7 +13,7 @@ export default class Player extends React.Component<PlayerProps> {
             return (
                 <div className="player-actions">
                     <button onClick={() => this.props.player.hitMe(this.props.deck.deal())}>Hit Me!!</button>
-                    <button onClick={() => this.props.player.stand()}>Stand</button>
+                    <button onClick={this.props.player.stand}>Stand</button>
                 </div>
             );
         }

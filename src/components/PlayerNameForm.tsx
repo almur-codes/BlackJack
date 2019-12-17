@@ -1,6 +1,7 @@
 import React from 'react';
 import './PlayerNameForm.css';
 import { PlayerNameFormProps, PlayerNameFormState } from '../interfaces';
+import { isNull } from 'util';
 
 export default class PlayerNameForm extends React.Component<PlayerNameFormProps, PlayerNameFormState> {
     constructor(props: any){
@@ -16,9 +17,13 @@ export default class PlayerNameForm extends React.Component<PlayerNameFormProps,
         this.props.handleSubmit(this.state.playerNames);
     }
 
-    onChangeHandler = (event: any): void => {
-        let newPlayerNames: Array<string> = this.state.playerNames.slice();
-        newPlayerNames[event.target.attributes['data-index'].value] = event.target.value;
+    onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        let newPlayerNames: Array<string> | undefined = this.state.playerNames.slice();
+        let newPlayerNameAttribute: Attr | null = event.target.attributes.getNamedItem('data-index')
+        if( isNull(newPlayerNameAttribute) ){
+            return
+        }
+        newPlayerNames[Number(newPlayerNameAttribute.value)] = event.target.value;
         this.setState({
             playerNames: newPlayerNames
         });

@@ -6,11 +6,12 @@ import Deck from './src/Deck';
 // new BlackJack();
 
 let deck: Deck = new Deck();
-let player: Player = new Player("Alex", deck);
+// deck.
+let player: Player = new Player("Alex", deck.deal);
 autorun(() => {
     console.log(deck.getCards.length)
 })
-
+console.log(player)
 player.hitMe()
 player.hitMe()
 player.hitMe()

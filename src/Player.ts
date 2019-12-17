@@ -10,9 +10,9 @@ export default class Player {
         bust: boolean,
         stand: boolean
     };
-    private dealCardCallback: Deck;
+    @action private dealCardCallback: () => Card;
 
-    public constructor(name: string, dealCardCallback?: Deck) {
+    public constructor(name: string, dealCardCallback?: () => Card) {
         this.name = name;
         this.hand = [];
         this.move = { bust: false, stand: false };
@@ -22,7 +22,7 @@ export default class Player {
     @action
     public hitMe(card?: Card): void {
         if( typeof this.dealCardCallback !== undefined){
-            card = this.dealCardCallback.deal();
+            card = this.dealCardCallback();
         }
         this.hand.push(card);
     }

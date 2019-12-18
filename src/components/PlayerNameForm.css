@@ -1,5 +1,5 @@
 .form input {
-    display: block;
+    display: inline;
     margin: 10px;
     padding: 10px;
     border: none;
@@ -22,10 +22,22 @@
     border: black solid 1px;
     background-color: white;
     transition: 1s ease-in-out;
+    border-radius: 5px;
 }
 
 .form button:hover {
     background-color: #999;
     transition: 1s ease-in-out;
     cursor: pointer;
+}
+
+.form div span {
+    transition: 0.3s ease-in-out;
+    padding: 3px;
+}
+
+.form div span:hover {
+    cursor: pointer;
+    padding: 3px;
+    transition: 0.3s ease-in-out;
 }

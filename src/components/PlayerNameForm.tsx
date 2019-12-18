@@ -12,12 +12,12 @@ export default class PlayerNameForm extends React.Component<PlayerNameFormProps,
         }
     }
 
-    handleSubmit = (event: any): void => {
+    private handleSubmit = (event: any): void => {
         event.preventDefault();
         this.props.handleSubmit(this.state.playerNames);
     }
 
-    onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    private onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
         let newPlayerNames: Array<string> | undefined = this.state.playerNames.slice();
         let newPlayerNameAttribute: Attr | null = event.target.attributes.getNamedItem('data-index')
         if( isNull(newPlayerNameAttribute) ){
@@ -29,18 +29,17 @@ export default class PlayerNameForm extends React.Component<PlayerNameFormProps,
         });
     }
 
-    addPlayer = (): void => {
+    private addPlayer = (): void => {
         this.setState({
             playerNames: [...this.state.playerNames, ""]
         });
     }
 
-    // removePlayer = (event: any): void => {
-    //     console.log(event.target.attributes);
-    //     const playerNames: Array<string> = [...this.state.playerNames];
-    //     playerNames.splice(event.target.attributes['data-index'].value, 1);
-    //     this.setState({ playerNames });
-    // }
+    private removePlayer = (event: any): void => {
+        const playerNames: Array<string> = [...this.state.playerNames];
+        playerNames.splice(event.target.attributes['data-index'].value, 1);
+        this.setState({ playerNames });
+    }
     
     public render(): JSX.Element {
         return (
@@ -54,6 +53,7 @@ export default class PlayerNameForm extends React.Component<PlayerNameFormProps,
                                     placeholder="Enter player's name" 
                                     data-index={index} 
                                     onChange={this.onChangeHandler}/>
+                                    <span data-index={index} onClick={this.removePlayer}>&times;</span>
                             </div>
                         );
                     })

@@ -80,7 +80,11 @@ export default class Table extends React.Component<TableProps, TableState> {
                     <div className="player-wrapper">
                         {
                             this.state.scoreBoard.getPlayers.map((player: PlayerStore, index: number) => {
-                                return <Player key={index} isActive={(index === this.getActivePlayerIndex())} deck={this.state.deck} player={player} />
+                                return <Player 
+                                    key={index} 
+                                    isActive={(index === this.getActivePlayerIndex())} 
+                                    deck={this.state.deck} 
+                                    player={player} />
                             })
                         
                         }

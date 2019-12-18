@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import { PlayerProps } from '../interfaces';
 
 @observer
-export default class Player extends React.Component<PlayerProps> {
+export default class Player extends React.Component<PlayerProps, never> {
     
     private renderActions(): JSX.Element {
         if(this.props.isActive){
